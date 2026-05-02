@@ -23,6 +23,7 @@ class ErrorBoundary extends Component {
   }
 }
 import { useAuth } from './components/Auth/AuthContext';
+import LoadingScreen from './components/shared/LoadingScreen';
 import Login from './components/Auth/Login';
 import Signup from './components/Auth/Signup';
 import Sidebar from './components/shared/Sidebar';
@@ -57,10 +58,8 @@ function AppShell() {
     return (
       <div className="app-layout">
         <Sidebar activeTab={activeTab} onNavigate={setActiveTab} />
-        <main className="main-content">
-          <div className="loading-spinner">
-            <div className="spinner" />
-          </div>
+        <main className="main-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <LoadingScreen fullScreen={false} text="Syncing your wardrobe..." />
         </main>
       </div>
     );
@@ -102,11 +101,7 @@ export default function App() {
   const [showSignup, setShowSignup] = useState(false);
 
   if (loading) {
-    return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
-        <div className="spinner" />
-      </div>
-    );
+    return <LoadingScreen fullScreen={true} text="Preparing your aesthetic..." />;
   }
 
   if (!user) {

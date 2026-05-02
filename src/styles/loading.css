@@ -1,0 +1,121 @@
+/* ====================================
+   OUTFITORACLE — LOADING SCREEN
+   Aesthetic: Smooth, Cute, Elegant
+   ==================================== */
+
+.elegant-loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--cream);
+  color: var(--charcoal);
+  z-index: 9999;
+  animation: fadeInLoading 0.6s ease-out forwards;
+}
+
+.elegant-loading-container.full-screen {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+.elegant-loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Cute pulsing double-ring animation */
+.elegant-rings {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid transparent;
+}
+
+.ring-outer {
+  width: 100%;
+  height: 100%;
+  border-top-color: var(--terracotta);
+  border-bottom-color: var(--terracotta-light);
+  animation: spinSmooth 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+}
+
+.ring-inner {
+  width: 60%;
+  height: 60%;
+  border-left-color: var(--gold);
+  border-right-color: var(--gold-light);
+  animation: spinSmoothReverse 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+}
+
+.ring-center {
+  width: 12px;
+  height: 12px;
+  background-color: var(--sage);
+  border-radius: 50%;
+  animation: pulseDot 1.5s ease-in-out infinite alternate;
+}
+
+.loading-brand-name {
+  font-family: var(--font-display);
+  font-size: 28px;
+  letter-spacing: 1px;
+  margin: 0;
+  color: var(--charcoal);
+  animation: slideUpFade 0.8s ease-out forwards;
+}
+
+.loading-brand-name span {
+  color: var(--terracotta);
+}
+
+.loading-text {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--charcoal-muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  animation: fadeInText 1s ease-out 0.4s forwards;
+  opacity: 0;
+}
+
+@keyframes spinSmooth {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes spinSmoothReverse {
+  0% { transform: rotate(360deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes pulseDot {
+  0% { transform: scale(0.8); opacity: 0.5; }
+  100% { transform: scale(1.2); opacity: 1; }
+}
+
+@keyframes slideUpFade {
+  0% { transform: translateY(15px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeInText {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes fadeInLoading {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
