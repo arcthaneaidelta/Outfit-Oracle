@@ -34,16 +34,16 @@
 }
 
 .dark-mode {
-  --cream: #0C0A09;
-  --cream-dark: #1C1917;
-  --cream-darker: #292524;
+  --cream: #121212;
+  --cream-dark: #1E1E1E;
+  --cream-darker: #2D2D2D;
   --charcoal: #F5F5F4;
   --charcoal-light: #D6D3D1;
   --charcoal-muted: #A8A29E;
-  --white: #171717;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
-  --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
-  --shadow-lg: 0 12px 40px rgba(0,0,0,0.5);
+  --white: #1E1E1E;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.5);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.6);
   --sidebar-bg: #000000;
   --sidebar-text: rgba(255,255,255,0.5);
   --sidebar-text-active: #FFFFFF;
@@ -111,7 +111,7 @@ img { max-width: 100%; }
 
 .sidebar-logo h1 {
   font-size: 22px;
-  color: var(--cream);
+  color: #F7F1E8;
   letter-spacing: -0.3px;
 }
 
@@ -1138,46 +1138,67 @@ body:has(.auth-page) {
   border-radius: 50%;
 }
 
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: -10px;
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.dashboard-greeting {
+  display: flex;
+  flex-direction: column;
+}
+
 .display-title {
-  font-size: clamp(32px, 4vw, 48px);
+  font-size: clamp(28px, 3.5vw, 42px);
   letter-spacing: -1px;
+  line-height: 1.1;
 }
 
 .sub-greeting {
   color: var(--charcoal-muted);
-  font-size: 16px;
-  margin-top: 4px;
+  font-size: 15px;
+  margin-top: 2px;
 }
 
 .weather-card-premium {
   background: var(--white);
-  padding: 16px 24px;
+  padding: 12px 20px;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   display: flex;
   align-items: center;
+  border: 1px solid var(--cream-darker);
+  flex-shrink: 0;
+  max-width: 240px;
 }
 
 .weather-main {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .weather-icon-large {
-  font-size: 42px;
+  font-size: 36px;
 }
 
 .temp-display {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 600;
   line-height: 1;
 }
 
 .condition-text {
-  font-size: 13px;
+  font-size: 11px;
   color: var(--charcoal-muted);
-  margin-top: 4px;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Stats Row Premium */
