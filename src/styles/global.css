@@ -530,10 +530,9 @@ input::placeholder { color: var(--charcoal-muted); }
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: url('https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=2574&auto=format&fit=crop');
+  background-image: url('/login-bg.png');
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
   position: fixed;
   inset: 0;
   font-family: 'DM Sans', sans-serif;
