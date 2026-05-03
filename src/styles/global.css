@@ -887,7 +887,66 @@ body:has(.auth-page) {
   overflow: hidden !important;
 }
 
+/* ---- Signup-Specific Styles ---- */
+.signup-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(8px, 1.2vw, 14px);
+}
 
+.select-styled {
+  width: 100%;
+  background: #F9F9F9;
+  border: 1px solid #E5E5E5;
+  border-radius: 10px;
+  padding: clamp(10px, 1.5vh, 14px) 16px clamp(10px, 1.5vh, 14px) 40px;
+  font-size: clamp(12px, 1.4vh, 14px);
+  color: var(--charcoal);
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+}
+
+.select-styled:focus {
+  background-color: #FFF;
+  border-color: var(--terracotta);
+  box-shadow: 0 0 0 3px rgba(196,98,45,0.06);
+  outline: none;
+}
+
+.signup-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(4px, 0.6vh, 6px);
+  margin-top: 2px;
+}
+
+.signup-chip {
+  padding: clamp(4px, 0.6vh, 6px) clamp(10px, 1.2vw, 14px);
+  border-radius: 99px;
+  font-size: clamp(10px, 1.1vh, 12px);
+  font-weight: 500;
+  border: 1px solid #E5E5E5;
+  background: #FAFAFA;
+  color: #777;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.signup-chip:hover {
+  border-color: var(--terracotta);
+  color: var(--terracotta);
+}
+
+.signup-chip.active {
+  background: var(--terracotta);
+  border-color: var(--terracotta);
+  color: white;
+}
 
 
 
