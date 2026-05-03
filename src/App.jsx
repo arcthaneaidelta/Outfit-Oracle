@@ -97,18 +97,46 @@ function AppShell() {
 }
 
 export default function App() {
-  const { user, loading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [showSignup, setShowSignup] = useState(false);
+  const [welcomeFinished, setWelcomeFinished] = useState(false);
+  const [shouldRenderLoader, setShouldRenderLoader] = useState(true);
+  const [isExiting, setIsExiting] = useState(false);
 
-  if (loading) {
-    return <LoadingScreen fullScreen={true} text="Preparing your aesthetic..." />;
-  }
+  // Ensure the welcome loading screen shows for at least 3.5 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setWelcomeFinished(true);
+    }, 3500);
+    return () => clearTimeout(timer);
+  }, []);
 
-  if (!user) {
-    return showSignup
-      ? <Signup onSwitch={() => setShowSignup(false)} />
-      : <Login onSwitch={() => setShowSignup(true)} />;
-  }
+  // Handle the transition from loading to app
+  useEffect(() => {
+    if (!authLoading && welcomeFinished) {
+      setIsExiting(true);
+      const timer = setTimeout(() => {
+        setShouldRenderLoader(false);
+      }, 800); // Matches the CSS fade-out duration
+      return () => clearTimeout(timer);
+    }
+  }, [authLoading, welcomeFinished]);
 
-  return <ErrorBoundary><AppShell /></ErrorBoundary>;
+  return (
+    <>
+      {shouldRenderLoader && (
+        <LoadingScreen isExiting={isExiting} text="Preparing your style experience..." />
+      )}
+      
+      {!user ? (
+        showSignup 
+          ? <Signup onSwitch={() => setShowSignup(false)} />
+          : <Login onSwitch={() => setShowSignup(true)} />
+      ) : (
+        <ErrorBoundary><AppShell /></ErrorBoundary>
+      )}
+    </>
+  );
 }
+
+

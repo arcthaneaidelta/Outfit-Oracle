@@ -1,121 +1,281 @@
 /* ====================================
-   OUTFITORACLE — LOADING SCREEN
-   Aesthetic: Smooth, Cute, Elegant
+   OUTFITORACLE — TRUE IDENTITY LOADING
+   100% Identical to Target Reference
    ==================================== */
 
+:root {
+  --o-gold: #D4AF37;
+  --o-gold-glow: rgba(212, 175, 55, 0.4);
+  --o-cream: #FDFBF7;
+  --o-charcoal: #000000;
+  --o-terracotta: #C4622D;
+}
+
 .elegant-loading-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--cream);
-  color: var(--charcoal);
-  z-index: 9999;
-  animation: fadeInLoading 0.6s ease-out forwards;
+  background-color: var(--o-cream);
+  background-image: url('/loading-bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 9999999;
+  overflow: hidden;
+  font-family: 'DM Sans', sans-serif;
 }
 
-.elegant-loading-container.full-screen {
-  position: fixed;
+/* Background Overlay for Depth */
+.elegant-loading-container::before {
+  content: '';
+  position: absolute;
   inset: 0;
-  width: 100vw;
-  height: 100vh;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.2) 0%, rgba(249,245,240,0.1) 100%);
+  pointer-events: none;
 }
 
 .elegant-loading-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  justify-content: center;
+  z-index: 10;
 }
 
-/* Cute pulsing double-ring animation */
-.elegant-rings {
-  position: relative;
+/* Wide Elliptical Orbit */
+.orbit-wrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1100px;
+  height: 600px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.badge-orbit-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  animation: rotateElliptical 40s linear infinite;
+}
+
+.badge-item {
+  position: absolute;
   width: 80px;
   height: 80px;
+  background: white;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.06), 0 0 25px var(--o-gold-glow);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  transform: translate(-50%, -50%);
+  animation: counterRotate 40s linear infinite;
 }
 
-.ring {
+.badge-item svg {
+  width: 40px;
+  height: 40px;
+  color: var(--o-terracotta);
+  stroke-width: 1;
+}
+
+/* Positions on Large Ellipse */
+.badge-1 { top: 0%; left: 50%; }
+.badge-2 { top: 25%; left: 93.3%; }
+.badge-3 { top: 75%; left: 93.3%; }
+.badge-4 { top: 100%; left: 50%; }
+.badge-5 { top: 75%; left: 6.7%; }
+.badge-6 { top: 25%; left: 6.7%; }
+
+/* Central Branding - Exact Parity */
+.central-branding {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translateY(-20px);
+  animation: fadeInScale 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+.monogram-logo {
+  width: 90px;
+  height: 90px;
+  margin-bottom: 20px;
+  color: var(--o-terracotta);
+  opacity: 0.9;
+}
+
+.brand-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 96px;
+  font-weight: 600;
+  color: var(--o-charcoal);
+  margin: 0;
+  letter-spacing: -3px;
+  line-height: 1;
+}
+
+.brand-title span {
+  color: var(--o-terracotta);
+}
+
+.brand-subtitle {
+  font-size: 16px;
+  letter-spacing: 14px;
+  text-transform: uppercase;
+  color: var(--o-charcoal);
+  font-weight: 500;
+  margin-top: 25px;
+  opacity: 0.8;
+}
+
+.tagline {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 34px;
+  color: var(--o-terracotta);
+  margin: 45px 0 70px 0;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.tagline::before, .tagline::after {
+  content: '✦';
+  font-size: 20px;
+  color: var(--o-gold);
+}
+
+/* Progress Section - Thinner, More Elegant */
+.progress-wrap {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  margin-bottom: 60px;
+}
+
+.progress-ring-bg {
+  fill: rgba(255, 255, 255, 0.4);
+  stroke: rgba(0,0,0,0.02);
+  stroke-width: 2;
+}
+
+.progress-ring-fill {
+  fill: none;
+  stroke: var(--o-terracotta);
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s ease;
+}
+
+.percentage {
   position: absolute;
-  border-radius: 50%;
-  border: 2px solid transparent;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 36px;
+  font-weight: 400;
+  color: var(--o-charcoal);
 }
 
-.ring-outer {
+.status-message {
+  font-size: 20px;
+  color: var(--o-charcoal);
+  opacity: 0.6;
+  margin-bottom: 30px;
+  font-weight: 300;
+}
+
+.bottom-divider {
+  width: 280px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--o-terracotta), transparent);
+  position: relative;
+}
+
+.bottom-divider::after {
+  content: '❧';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--o-cream);
+  padding: 0 25px;
+  color: var(--o-terracotta);
+  font-size: 32px;
+}
+
+/* Cinematic Glow Streaks */
+.glow-streaks {
+  position: absolute;
   width: 100%;
   height: 100%;
-  border-top-color: var(--terracotta);
-  border-bottom-color: var(--terracotta-light);
-  animation: spinSmooth 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+  pointer-events: none;
 }
 
-.ring-inner {
-  width: 60%;
-  height: 60%;
-  border-left-color: var(--gold);
-  border-right-color: var(--gold-light);
-  animation: spinSmoothReverse 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
-}
-
-.ring-center {
-  width: 12px;
-  height: 12px;
-  background-color: var(--sage);
+.streak {
+  position: absolute;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
-  animation: pulseDot 1.5s ease-in-out infinite alternate;
+  border: 1px solid rgba(212, 175, 55, 0.08);
+  box-shadow: 0 0 50px rgba(212, 175, 55, 0.03);
+  animation: streakSpin 30s linear infinite;
 }
 
-.loading-brand-name {
-  font-family: var(--font-display);
-  font-size: 28px;
-  letter-spacing: 1px;
-  margin: 0;
-  color: var(--charcoal);
-  animation: slideUpFade 0.8s ease-out forwards;
+.streak-alt {
+  animation: streakSpin 40s linear infinite reverse;
+  border-color: rgba(212, 175, 55, 0.04);
 }
 
-.loading-brand-name span {
-  color: var(--terracotta);
+/* Animations */
+@keyframes rotateElliptical {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
-.loading-text {
-  font-family: var(--font-body);
-  font-size: 14px;
-  color: var(--charcoal-muted);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  animation: fadeInText 1s ease-out 0.4s forwards;
+@keyframes counterRotate {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(-360deg); }
+}
+
+@keyframes streakSpin {
+  from { transform: rotate(0deg) scale(1); opacity: 0.1; }
+  50% { transform: rotate(180deg) scale(1.1); opacity: 0.3; }
+  to { transform: rotate(360deg) scale(1); opacity: 0.1; }
+}
+
+@keyframes fadeInScale {
+  0% { opacity: 0; transform: scale(0.98); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.elegant-loading-container.fade-out {
   opacity: 0;
+  transform: scale(1.05);
+  transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+  pointer-events: none;
 }
 
-@keyframes spinSmooth {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+/* Wide Screen Support */
+
+@media (max-width: 1200px) {
+  .orbit-wrap { width: 95vw; height: 50vh; }
+  .brand-title { font-size: 72px; }
+  .tagline { font-size: 28px; }
 }
 
-@keyframes spinSmoothReverse {
-  0% { transform: rotate(360deg); }
-  100% { transform: rotate(0deg); }
-}
 
-@keyframes pulseDot {
-  0% { transform: scale(0.8); opacity: 0.5; }
-  100% { transform: scale(1.2); opacity: 1; }
-}
 
-@keyframes slideUpFade {
-  0% { transform: translateY(15px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
-}
 
-@keyframes fadeInText {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
 
-@keyframes fadeInLoading {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}

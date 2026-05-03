@@ -111,10 +111,16 @@ img { max-width: 100%; }
 
 .sidebar-nav {
   flex: 1;
-  padding: 24px 12px;
+  padding: 16px 12px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+}
+
+.sidebar-nav::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
 }
 
 .nav-item {
@@ -150,8 +156,9 @@ img { max-width: 100%; }
 }
 
 .sidebar-bottom {
-  padding: 16px 12px 0;
+  padding: 12px 12px 0;
   border-top: 1px solid rgba(247,241,232,0.1);
+  margin-top: auto;
 }
 
 /* ---- Main Content ---- */
@@ -503,6 +510,12 @@ input::placeholder { color: var(--charcoal-muted); }
   min-height: 100vh;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  animation: authEntrance 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes authEntrance {
+  from { opacity: 0; transform: scale(1.02); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 .auth-left {
