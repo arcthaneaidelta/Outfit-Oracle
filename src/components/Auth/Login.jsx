@@ -30,7 +30,7 @@ export default function Login({ onSwitch }) {
         <header className="auth-header-top">
           <div className="top-icon">✦</div>
           <h1>Outfit<span>Oracle</span></h1>
-          <p>Plan. Style. Express. Every you.</p>
+          <p>Smart Outfits, Zero Guesswork</p>
         </header>
 
         <div className="auth-card">
@@ -73,7 +73,6 @@ export default function Login({ onSwitch }) {
               <label className="remember-me">
                 <input type="checkbox" /> Remember me
               </label>
-              <a href="#" className="forgot-link">Forgot password?</a>
             </div>
 
             <button type="submit" className="btn-signin" disabled={loading}>
