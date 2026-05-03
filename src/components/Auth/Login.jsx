@@ -117,11 +117,11 @@ export default function Login({ onSwitch }) {
               <span>Your style. Your way.</span>
             </div>
           </footer>
-        </div>
 
-        <div className="auth-switch-modern">
-          Don't have an account?{' '}
-          <a href="#" onClick={(e) => { e.preventDefault(); onSwitch(); }}>Create one</a>
+          <div className="auth-switch-card">
+            Don't have an account?{' '}
+            <a href="#" onClick={(e) => { e.preventDefault(); onSwitch(); }}>Create one</a>
+          </div>
         </div>
       </div>
     </div>

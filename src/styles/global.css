@@ -859,17 +859,26 @@ input::placeholder { color: var(--charcoal-muted); }
   color: var(--terracotta);
 }
 
-/* ---- "Don't have account" link ---- */
-.auth-switch-modern {
-  margin-top: clamp(10px, 1.5vh, 22px);
+/* ---- "Don't have account" — inside the card ---- */
+.auth-switch-card {
+  margin-top: clamp(14px, 2vh, 24px);
+  padding-top: clamp(12px, 1.8vh, 20px);
+  border-top: 1px solid #F0F0F0;
   font-size: clamp(12px, 1.3vh, 14px);
-  color: white;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  color: #888;
+  text-align: center;
+  width: 100%;
 }
 
-.auth-switch-modern a {
-  color: white;
-  font-weight: 700;
+.auth-switch-card a {
+  color: var(--terracotta);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.auth-switch-card a:hover {
+  color: var(--terracotta-light);
   text-decoration: underline;
 }
 
