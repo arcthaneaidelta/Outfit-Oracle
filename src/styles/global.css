@@ -548,7 +548,7 @@ input::placeholder { color: var(--charcoal-muted); }
 /* ---- Header above card ---- */
 .auth-header-top {
   text-align: center;
-  margin-bottom: 2vh;
+  margin-bottom: clamp(8px, 1.2vh, 16px);
   color: #000;
 }
 
@@ -586,8 +586,8 @@ input::placeholder { color: var(--charcoal-muted); }
 /* ---- White Card ---- */
 .auth-card {
   background: #FFFFFF;
-  border-radius: clamp(20px, 3.5vh, 32px);
-  padding: clamp(20px, 3.5vh, 42px) clamp(24px, 4vw, 40px) clamp(16px, 2.5vh, 24px);
+  border-radius: clamp(18px, 3vh, 28px);
+  padding: clamp(16px, 2.5vh, 36px) clamp(24px, 4vw, 40px) clamp(12px, 1.8vh, 20px);
   width: 100%;
   box-shadow: 0 16px 50px rgba(0,0,0,0.14);
   display: flex;
@@ -607,9 +607,9 @@ input::placeholder { color: var(--charcoal-muted); }
 .auth-card .auth-subtext {
   font-size: clamp(11px, 1.4vh, 13px);
   color: #666;
-  line-height: 1.5;
+  line-height: 1.4;
   max-width: 310px;
-  margin-bottom: clamp(14px, 2.5vh, 28px);
+  margin-bottom: clamp(10px, 1.8vh, 22px);
 }
 
 /* ---- Form ---- */
@@ -786,10 +786,10 @@ input::placeholder { color: var(--charcoal-muted); }
 
 /* ---- Secure Sign In ---- */
 .secure-info {
-  margin-top: clamp(14px, 2vh, 28px);
+  margin-top: clamp(10px, 1.5vh, 20px);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   text-align: left;
   width: 100%;
 }
@@ -816,15 +816,15 @@ input::placeholder { color: var(--charcoal-muted); }
 
 /* ---- Footer Faces ---- */
 .auth-card-footer {
-  margin-top: clamp(14px, 2.2vh, 28px);
-  padding-top: clamp(12px, 1.8vh, 22px);
+  margin-top: clamp(10px, 1.5vh, 20px);
+  padding-top: clamp(8px, 1.2vh, 16px);
   border-top: 1px solid #F0F0F0;
   width: 110%;
   margin-left: -5%;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 14px;
 }
 
 .footer-faces {
@@ -861,8 +861,8 @@ input::placeholder { color: var(--charcoal-muted); }
 
 /* ---- "Don't have account" — inside the card ---- */
 .auth-switch-card {
-  margin-top: clamp(14px, 2vh, 24px);
-  padding-top: clamp(12px, 1.8vh, 20px);
+  margin-top: clamp(10px, 1.5vh, 18px);
+  padding-top: clamp(10px, 1.4vh, 16px);
   border-top: 1px solid #F0F0F0;
   font-size: clamp(12px, 1.3vh, 14px);
   color: #888;
