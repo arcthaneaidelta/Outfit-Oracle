@@ -2,9 +2,11 @@ import { useMemo } from 'react';
 import { useAuth } from '../Auth/AuthContext';
 import { useWeather } from '../../hooks/useWeather';
 import { getRecommendations, getCategoryEmoji } from '../../utils/recommendations';
+import { useToast } from '../shared/ToastContext';
 
 export default function Dashboard({ wardrobe, outfits, history, planner, onNavigate, theme, toggleTheme }) {
   const { userProfile } = useAuth();
+  const { addToast } = useToast();
   const { weather } = useWeather(userProfile?.city);
 
   const today = new Date().toISOString().split('T')[0];
@@ -46,7 +48,7 @@ export default function Dashboard({ wardrobe, outfits, history, planner, onNavig
               <span className="icon">🌙</span>
             </button>
           </div>
-          <button className="notification-btn">
+          <button className="notification-btn" onClick={() => addToast('You have no new style alerts', 'info')}>
             <span className="icon">🔔</span>
             <span className="dot" />
           </button>

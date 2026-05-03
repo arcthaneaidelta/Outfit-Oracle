@@ -919,7 +919,7 @@ body:has(.auth-page) {
   border-radius: 10px;
   padding: clamp(10px, 1.5vh, 14px) 16px clamp(10px, 1.5vh, 14px) 40px;
   font-size: clamp(12px, 1.4vh, 14px);
-  color: var(--charcoal);
+  color: #1C1917 !important;
   appearance: none;
   -webkit-appearance: none;
   cursor: pointer;

@@ -4,11 +4,19 @@ import { useToast } from '../shared/ToastContext';
 
 const STYLE_PREFS = ['Casual', 'Formal', 'Streetwear', 'Minimalist', 'Bohemian', 'Classic', 'Sporty', 'Eclectic'];
 
+const PAK_CITIES = [
+  'Karachi', 'Lahore', 'Faisalabad', 'Rawalpindi', 'Gujranwala', 
+  'Peshawar', 'Multan', 'Hyderabad', 'Islamabad', 'Quetta', 
+  'Bahawalpur', 'Sargodha', 'Sialkot', 'Sukkur', 'Larkana', 
+  'Sheikhupura', 'Rahim Yar Khan', 'Jhang', 'Dera Ghazi Khan', 
+  'Gujrat', 'Sahiwal', 'Wah Cantonment', 'Mardan', 'Kasur', 'Okara'
+].sort();
+
 export default function Signup({ onSwitch }) {
   const { signup } = useAuth();
   const { addToast } = useToast();
   const [form, setForm] = useState({
-    name: '', email: '', password: '', city: '', gender: '', stylePrefs: [],
+    name: '', email: '', password: '', city: 'Lahore', gender: '', stylePrefs: [],
   });
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -28,6 +36,10 @@ export default function Signup({ onSwitch }) {
     e.preventDefault();
     if (form.password.length < 6) {
       addToast('Password must be at least 6 characters', 'error');
+      return;
+    }
+    if (!form.gender) {
+      addToast('Please select your gender', 'error');
       return;
     }
     setLoading(true);
@@ -74,7 +86,9 @@ export default function Signup({ onSwitch }) {
                   <div className="input-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                   </div>
-                  <input name="city" value={form.city} onChange={handle} placeholder="New York" />
+                  <select name="city" value={form.city} onChange={handle} className="select-styled">
+                    {PAK_CITIES.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
                 </div>
               </div>
             </div>
@@ -114,11 +128,11 @@ export default function Signup({ onSwitch }) {
                 <div className="input-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
                 </div>
-                <select name="gender" value={form.gender} onChange={handle} className="select-styled">
-                  <option value="">Select gender</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Prefer not to say">Prefer not to say</option>
+                <select name="gender" value={form.gender} onChange={handle} className="select-styled" required>
+                  <option value="" disabled>Select gender</option>
+                  <option value="Male" style={{ color: '#1C1917' }}>Male</option>
+                  <option value="Female" style={{ color: '#1C1917' }}>Female</option>
+                  <option value="Prefer not to say" style={{ color: '#1C1917' }}>Prefer not to say</option>
                 </select>
               </div>
             </div>
