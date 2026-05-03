@@ -41,15 +41,20 @@ export default function Sidebar({ activeTab, onNavigate }) {
       </nav>
 
       <div className="sidebar-bottom">
-        <div style={{ padding: '12px', marginBottom: '8px' }}>
-          <div style={{ fontSize: '13px', color: 'rgba(247,241,232,0.8)', fontWeight: 500 }}>
-            {userProfile?.name || user?.displayName || 'User'}
+        <button 
+          className={`sidebar-user-area ${activeTab === 'profile' ? 'active' : ''}`}
+          onClick={() => onNavigate('profile')}
+        >
+          <div className="user-info">
+            <div className="user-name">
+              {userProfile?.name || user?.displayName || 'User'}
+            </div>
+            <div className="user-city">
+              {userProfile?.city || 'No city set'}
+            </div>
           </div>
-          <div style={{ fontSize: '11px', color: 'rgba(247,241,232,0.4)', marginTop: '2px' }}>
-            {userProfile?.city || 'No city set'}
-          </div>
-        </div>
-        <button className="nav-item" onClick={handleLogout} style={{ width: '100%' }}>
+        </button>
+        <button className="nav-item logout-btn" onClick={handleLogout}>
           <span className="nav-icon">↩</span>
           Sign Out
         </button>

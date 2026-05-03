@@ -34,9 +34,10 @@ import Recommendations from './components/Recommendations/Recommendations';
 import Planner from './components/Planner/Planner';
 import WearHistory from './components/Wardrobe/WearHistory';
 import Favorites from './components/Favorites/Favorites';
+import ProfileSettings from './components/Dashboard/ProfileSettings';
 import { useWardrobe, useOutfits, usePlanner, useWearHistory } from './hooks/useFirestore';
 
-function AppShell() {
+function AppShell({ theme, toggleTheme }) {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
 
@@ -56,7 +57,7 @@ function AppShell() {
 
   if (loading) {
     return (
-      <div className="app-layout">
+      <div className={`app-layout ${theme === 'dark' ? 'dark-mode' : ''}`}>
         <Sidebar activeTab={activeTab} onNavigate={setActiveTab} />
         <main className="main-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <LoadingScreen fullScreen={false} text="Syncing your wardrobe..." />
@@ -68,7 +69,7 @@ function AppShell() {
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
-        return <Dashboard wardrobe={items} outfits={outfits} history={history} planner={entries} onNavigate={setActiveTab} />;
+        return <Dashboard wardrobe={items} outfits={outfits} history={history} planner={entries} onNavigate={setActiveTab} theme={theme} toggleTheme={toggleTheme} />;
       case 'wardrobe':
         return <Wardrobe items={items} addItem={addItem} deleteItem={deleteItem} updateItem={updateItem} />;
       case 'outfit-builder':
@@ -81,13 +82,15 @@ function AppShell() {
         return <WearHistory history={history} />;
       case 'favorites':
         return <Favorites outfits={outfits} wardrobe={items} toggleFavorite={toggleFavorite} planOutfit={planOutfit} />;
+      case 'profile':
+        return <ProfileSettings />;
       default:
         return null;
     }
   };
 
   return (
-    <div className="app-layout">
+    <div className={`app-layout ${theme === 'dark' ? 'dark-mode' : ''}`}>
       <Sidebar activeTab={activeTab} onNavigate={setActiveTab} />
       <main className="main-content">
         {renderContent()}
@@ -102,6 +105,21 @@ export default function App() {
   const [welcomeFinished, setWelcomeFinished] = useState(false);
   const [shouldRenderLoader, setShouldRenderLoader] = useState(true);
   const [isExiting, setIsExiting] = useState(false);
+  const [theme, setTheme] = useState(() => localStorage.getItem('ot-theme') || 'light');
+
+  const toggleTheme = () => {
+    const next = theme === 'light' ? 'dark' : 'light';
+    setTheme(next);
+    localStorage.setItem('ot-theme', next);
+  };
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }, [theme]);
 
   // Ensure the welcome loading screen shows for at least 3.5 seconds
   useEffect(() => {
@@ -133,7 +151,7 @@ export default function App() {
           ? <Signup onSwitch={() => setShowSignup(false)} />
           : <Login onSwitch={() => setShowSignup(true)} />
       ) : (
-        <ErrorBoundary><AppShell /></ErrorBoundary>
+        <ErrorBoundary><AppShell theme={theme} toggleTheme={toggleTheme} /></ErrorBoundary>
       )}
     </>
   );
