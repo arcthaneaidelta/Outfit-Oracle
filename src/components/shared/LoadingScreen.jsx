@@ -1,115 +1,191 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import '../../styles/loading.css';
 
-const FashionIcons = {
-  Hanger: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 2v4M2 11c0-2.2 2-4 4.5-4 2 0 3.3 1.2 4.1 2.3.4.6 1.4.6 1.8 0 .8-1.1 2.1-2.3 4.1-2.3 2.5 0 4.5 1.8 4.5 4v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-9z" />
-    </svg>
-  ),
-  Suit: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 2v20M20 2v20M4 7l8 4 8-4M12 11v11" />
-    </svg>
-  ),
-  Bag: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
-      <path d="M3 6h18M16 10a4 4 0 0 1-8 0" />
-    </svg>
-  ),
-  Star: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-    </svg>
-  ),
-  Shoe: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 21h18l-3-7H6l-3 7ZM6 14l2-6h8l2 6" />
-    </svg>
-  ),
-  Mannequin: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 2a4 4 0 0 1 4 4c0 1.5-1 3.5-2 5h-4c-1-1.5-2-3.5-2-5a4 4 0 0 1 4-4ZM12 11v11M9 22h6" />
-    </svg>
-  )
-};
-
-export default function LoadingScreen({ text = "Preparing your style experience...", isExiting = false }) {
-  const [progress, setProgress] = useState(0);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((prev) => (prev >= 100 ? 100 : prev + Math.random() * 5));
-    }, 200);
-    return () => clearInterval(timer);
-  }, []);
-
-  const circumference = 2 * Math.PI * 45;
-  const strokeDashoffset = circumference - (progress / 100) * circumference;
+/* ── Floating Particle System ── */
+function Particles({ count = 35 }) {
+  const particles = useMemo(() =>
+    Array.from({ length: count }, (_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      size: Math.random() * 3 + 1,
+      duration: Math.random() * 20 + 15,
+      delay: Math.random() * 10,
+      opacity: Math.random() * 0.4 + 0.1,
+    })), [count]);
 
   return (
-    <div className={`elegant-loading-container ${isExiting ? 'fade-out' : ''}`}>
-
-      {/* Cinematic Glow Streaks */}
-      <div className="glow-streaks">
-        <div className="streak"></div>
-        <div className="streak streak-alt"></div>
-      </div>
-
-      <div className="elegant-loading-content">
-        {/* Elliptical Orbit System */}
-        <div className="orbit-wrap">
-          <div className="badge-orbit-container">
-            <div className="badge-item badge-1"><FashionIcons.Hanger /></div>
-            <div className="badge-item badge-2"><FashionIcons.Suit /></div>
-            <div className="badge-item badge-3"><FashionIcons.Bag /></div>
-            <div className="badge-item badge-4"><FashionIcons.Star /></div>
-            <div className="badge-item badge-5"><FashionIcons.Shoe /></div>
-            <div className="badge-item badge-6"><FashionIcons.Mannequin /></div>
-          </div>
-        </div>
-
-        {/* Central Brand Identity */}
-        <div className="central-branding">
-          <div className="monogram-logo">
-            <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1.2">
-              <circle cx="50" cy="50" r="38" strokeDasharray="2 4" opacity="0.3" />
-              <path d="M50 25c-13.8 0-25 11.2-25 25s11.2 25 25 25 25-11.2 25-25-11.2-25-25-25Zm0 5c11 0 20 9 20 20s-9 20-20 20-20-9-20-20 9-20 20-20Z" fill="currentColor" fillOpacity="0.1" />
-              <path d="M50 40c-5.5 0-10 4.5-10 10s4.5 10 10 10 10-4.5 10-10-4.5-10-10-10Z" strokeWidth="0.8" />
-            </svg>
-          </div>
-
-          <h1 className="brand-title">Outfit<span>Oracle</span></h1>
-          <div className="brand-subtitle">Smart Style Assistant</div>
-          
-          <div className="tagline">
-            <span>Smart Outfits, Zero Guesswork</span>
-          </div>
-
-          {/* Elegant Progress Ring */}
-          <div className="progress-wrap">
-            <svg className="progress-ring-svg" viewBox="0 0 100 100">
-              <circle className="progress-ring-bg" cx="50" cy="50" r="45" />
-              <circle 
-                className="progress-ring-fill" 
-                cx="50" 
-                cy="50" 
-                r="45" 
-                strokeDasharray={circumference}
-                strokeDashoffset={strokeDashoffset}
-              />
-            </svg>
-            <div className="percentage">{Math.round(progress)}%</div>
-          </div>
-
-          <p className="status-message">{text}</p>
-          <div className="bottom-divider"></div>
-        </div>
-      </div>
+    <div className="ld-particles">
+      {particles.map(p => (
+        <div
+          key={p.id}
+          className="ld-particle"
+          style={{
+            left: `${p.x}%`,
+            top: `${p.y}%`,
+            width: `${p.size}px`,
+            height: `${p.size}px`,
+            animationDuration: `${p.duration}s`,
+            animationDelay: `${p.delay}s`,
+            opacity: p.opacity,
+          }}
+        />
+      ))}
     </div>
   );
 }
 
+/* ── Fashion Icon Components ── */
+const Icons = {
+  Hanger: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round">
+      <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.38-1 1.72V9l7 5v1H4v-1l7-5V5.72A2 2 0 0 1 12 2z" />
+      <path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4" />
+    </svg>
+  ),
+  Dress: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round">
+      <path d="M8 2h8l-2 6h4l-6 14-6-14h4L8 2z" />
+    </svg>
+  ),
+  Bag: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round">
+      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+      <path d="M3 6h18M16 10a4 4 0 0 1-8 0" />
+    </svg>
+  ),
+  Diamond: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round">
+      <path d="M6 3h12l4 6-10 13L2 9z" />
+      <path d="M2 9h20M12 22 6 9M12 22l6-13M6 3l6 6M18 3l-6 6" />
+    </svg>
+  ),
+  Shoe: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round">
+      <path d="M3 18h18v2H3zM4 18c0-4 1-7 3-9l2 3c3-2 5-1 7 0l2-3c2 2 3 5 3 9" />
+    </svg>
+  ),
+  Crown: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round">
+      <path d="M2 17l3-10 5 6 2-11 2 11 5-6 3 10z" />
+      <path d="M2 17h20v3H2z" />
+    </svg>
+  ),
+};
 
+const iconEntries = Object.entries(Icons);
 
+/* ── Main Loading Screen ── */
+export default function LoadingScreen({ text = "Preparing your style experience...", isExiting = false }) {
+  const [progress, setProgress] = useState(0);
+  const [phase, setPhase] = useState(0); // 0=initial, 1=icons visible, 2=brand visible, 3=progress visible
+
+  useEffect(() => {
+    const timers = [
+      setTimeout(() => setPhase(1), 300),
+      setTimeout(() => setPhase(2), 800),
+      setTimeout(() => setPhase(3), 1400),
+    ];
+    return () => timers.forEach(clearTimeout);
+  }, []);
+
+  useEffect(() => {
+    if (phase < 3) return;
+    const timer = setInterval(() => {
+      setProgress(prev => prev >= 100 ? 100 : prev + Math.random() * 4 + 1);
+    }, 180);
+    return () => clearInterval(timer);
+  }, [phase]);
+
+  const circumference = 2 * Math.PI * 52;
+  const offset = circumference - (progress / 100) * circumference;
+
+  return (
+    <div className={`ld-screen ${isExiting ? 'ld-exit' : ''}`}>
+      {/* Ambient Background Layers */}
+      <div className="ld-bg-gradient" />
+      <Particles />
+
+      {/* Decorative Orbit Rings */}
+      <div className="ld-orbits">
+        <div className="ld-orbit ld-orbit-1" />
+        <div className="ld-orbit ld-orbit-2" />
+        <div className="ld-orbit ld-orbit-3" />
+      </div>
+
+      {/* Floating Fashion Icons */}
+      <div className={`ld-icons-ring ${phase >= 1 ? 'ld-visible' : ''}`}>
+        {iconEntries.map(([name, Icon], i) => {
+          const angle = (i / iconEntries.length) * 360;
+          return (
+            <div
+              key={name}
+              className="ld-icon-bubble"
+              style={{
+                '--angle': `${angle}deg`,
+                '--delay': `${i * 0.15}s`,
+              }}
+            >
+              <Icon />
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Central Content */}
+      <div className={`ld-center ${phase >= 2 ? 'ld-visible' : ''}`}>
+        {/* Glowing Accent */}
+        <div className="ld-glow-orb" />
+
+        {/* Brand */}
+        <div className="ld-brand-icon">✦</div>
+        <h1 className="ld-brand">
+          <span className="ld-brand-o">Outfit</span>
+          <span className="ld-brand-r">Oracle</span>
+        </h1>
+
+        {/* Tagline with staggered word reveal */}
+        <div className="ld-tagline">
+          {'Smart Outfits, Zero Guesswork'.split(' ').map((word, i) => (
+            <span
+              key={i}
+              className="ld-tagline-word"
+              style={{ animationDelay: `${1.2 + i * 0.18}s` }}
+            >
+              {word}
+            </span>
+          ))}
+        </div>
+
+        {/* Progress Ring */}
+        <div className={`ld-progress ${phase >= 3 ? 'ld-visible' : ''}`}>
+          <svg viewBox="0 0 120 120" className="ld-progress-svg">
+            {/* Outer decorative ring */}
+            <circle cx="60" cy="60" r="58" className="ld-ring-outer" />
+            {/* Track */}
+            <circle cx="60" cy="60" r="52" className="ld-ring-track" />
+            {/* Fill */}
+            <circle
+              cx="60" cy="60" r="52"
+              className="ld-ring-fill"
+              strokeDasharray={circumference}
+              strokeDashoffset={offset}
+            />
+            {/* Inner decorative */}
+            <circle cx="60" cy="60" r="46" className="ld-ring-inner" />
+          </svg>
+          <div className="ld-progress-text">
+            <span className="ld-pct">{Math.round(progress)}</span>
+            <span className="ld-pct-sign">%</span>
+          </div>
+        </div>
+
+        {/* Status */}
+        <p className={`ld-status ${phase >= 3 ? 'ld-visible' : ''}`}>{text}</p>
+      </div>
+
+      {/* Bottom Decorative Line */}
+      <div className="ld-bottom-line" />
+    </div>
+  );
+}
