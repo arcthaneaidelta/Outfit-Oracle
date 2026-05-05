@@ -1108,7 +1108,7 @@ body:has(.auth-page) {
 
 .theme-icon-item.sun {
   color: #FACC15; /* Bright yellow sun */
-  filter: drop-shadow(0 0 6px rgba(250, 204, 21, 0.6));
+  filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.8));
 }
 
 .theme-icon-item.moon {
