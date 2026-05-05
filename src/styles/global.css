@@ -1080,30 +1080,36 @@ body:has(.auth-page) {
 }
 
 .icon-clipper {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .rotating-icons {
   position: absolute;
-  top: -12px; /* Center adjustment */
-  left: 0;
-  width: 32px;
-  transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-  transform: rotate(calc(var(--rotation) * 1deg));
+  width: 24px;
+  height: 80px; /* Large enough to hold both with space */
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-between;
+  padding: 4px 0;
+  transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: rotate(calc(var(--rotation) * 1deg));
+  transform-origin: center center;
 }
 
 .theme-icon-item {
-  height: 56px; /* Spacing between icons in the rotation */
+  height: 24px;
+  width: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 1.2s, color 1.2s;
+  transition: color 1.2s;
 }
 
 .theme-icon-item.sun {
@@ -1112,13 +1118,13 @@ body:has(.auth-page) {
 }
 
 .theme-icon-item.moon {
-  color: #64748B; /* Realistic daytime slate-gray moon for visibility */
+  color: #64748B; /* Daytime moon */
   filter: drop-shadow(0 0 2px rgba(0,0,0,0.1));
-  transform: rotate(-180deg); /* Counter-rotate to stay upright */
+  transform: rotate(180deg); /* Counter-rotate to stay upright when flipped */
 }
 
 .dark-mode .theme-icon-item.moon {
-  color: #FEFCD7; /* Glowing creamy night moon */
+  color: #FEFCD7; /* Glowing night moon */
   filter: drop-shadow(0 0 8px rgba(254, 252, 215, 0.8));
 }
 
