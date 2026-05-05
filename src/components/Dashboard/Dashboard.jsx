@@ -1,3 +1,4 @@
+// Animated Theme Toggle version
 import { useMemo } from 'react';
 import { useAuth } from '../Auth/AuthContext';
 import { useWeather } from '../../hooks/useWeather';
