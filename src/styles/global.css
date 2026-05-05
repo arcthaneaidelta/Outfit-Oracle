@@ -2148,45 +2148,59 @@ body:has(.auth-page) {
   filter: drop-shadow(0 10px 15px rgba(0,0,0,0.05));
 }
 
-.vto-layer-container {
+.vto-clothing-layer {
   position: absolute;
-  inset: 0;
   pointer-events: none;
-  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-  transform-origin: bottom center;
-}
-
-.vto-layer {
-  position: absolute;
-  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   transition: all 0.3s ease;
 }
 
-/* Layer Zones and Scaling */
-.vto-layer-bottom { top: 40%; height: 50%; width: 110%; left: -5%; }
-.vto-layer-top { top: 15%; height: 35%; width: 120%; left: -10%; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1)); }
-.vto-layer-outerwear { top: 13%; height: 45%; width: 130%; left: -15%; filter: drop-shadow(0 8px 15px rgba(0,0,0,0.15)); }
-.vto-layer-shoes { top: 88%; height: 12%; width: 100%; left: 0; }
-
-.vto-item-img {
-  max-width: 100%;
-  max-height: 100%;
+.vto-clothing-layer img {
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-  mix-blend-mode: multiply;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));
 }
 
-.dark-mode .vto-item-img {
-  mix-blend-mode: normal;
-}
-
-.vto-item-emoji-wrapper {
-  font-size: 80px;
+.vto-emoji-fallback {
+  font-size: 64px;
   line-height: 1;
-  opacity: 0.9;
   filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+}
+
+.vto-ai-loader {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: var(--terracotta);
+  font-weight: 600;
+  border-radius: var(--radius-lg);
+}
+
+.dark-mode .vto-ai-loader {
+  background: rgba(30, 30, 30, 0.7);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--cream-dark);
+  border-top-color: var(--terracotta);
+  border-radius: 50%;
+  animation: spinner 0.8s linear infinite;
+}
+
+@keyframes spinner {
+  to { transform: rotate(360deg); }
 }
 
 .vto-customization {
