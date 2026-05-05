@@ -37,16 +37,16 @@ export default function Dashboard({ wardrobe, outfits, history, planner, onNavig
       {/* Top Utility Bar */}
       <div className="dashboard-top-bar">
         <div className="utility-actions">
-          <div className="theme-toggle-wrap">
-            <button className={`theme-btn ${theme === 'light' ? 'active' : ''}`} onClick={() => theme === 'dark' && toggleTheme()}>
-              <span className="icon">☀️</span>
-            </button>
-            <div className="theme-switch" onClick={toggleTheme}>
-              <div className={`switch-knob ${theme === 'dark' ? 'right' : ''}`} />
+          <div className="theme-animation-wrapper" onClick={toggleTheme}>
+            <div className="icon-clipper">
+              <div className="rotating-icons" style={{ '--rotation': theme === 'dark' ? '180' : '0' }}>
+                <div className="theme-icon-item moon">🌙</div>
+                <div className="theme-icon-item sun">☀️</div>
+              </div>
             </div>
-            <button className={`theme-btn ${theme === 'dark' ? 'active' : ''}`} onClick={() => theme === 'light' && toggleTheme()}>
-              <span className="icon">🌙</span>
-            </button>
+            <span className="theme-toggle-text">
+              {theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            </span>
           </div>
           <button className="notification-btn" onClick={() => addToast('You have no new style alerts', 'info')}>
             <span className="icon">🔔</span>

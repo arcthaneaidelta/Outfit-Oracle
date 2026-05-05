@@ -1059,63 +1059,67 @@ body:has(.auth-page) {
   gap: 20px;
 }
 
-.theme-toggle-wrap {
-  background: var(--cream-dark);
-  padding: 4px;
-  border-radius: 99px;
+.theme-animation-wrapper {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 12px;
+  cursor: pointer;
+  padding: 6px 16px;
+  background: var(--cream-dark);
+  border-radius: 99px;
   border: 1px solid var(--cream-darker);
+  transition: var(--transition);
+  height: 44px;
+  overflow: hidden;
+  position: relative;
 }
 
-.theme-btn {
-  background: none;
-  border: none;
-  width: 28px;
-  height: 28px;
+.theme-animation-wrapper:hover {
+  background: var(--cream-darker);
+}
+
+.icon-clipper {
+  width: 32px;
+  height: 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.rotating-icons {
+  position: absolute;
+  top: -12px; /* Center adjustment */
+  left: 0;
+  width: 32px;
+  transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: rotate(calc(var(--rotation) * 1deg));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.theme-icon-item {
+  height: 56px; /* Spacing between icons in the rotation */
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  transition: var(--transition);
-  opacity: 0.4;
+  font-size: 20px;
+  transition: color 1.2s;
+  color: var(--gold);
 }
 
-.theme-btn.active {
-  background: var(--white);
-  box-shadow: var(--shadow-sm);
-  opacity: 1;
+.dark-mode .theme-icon-item {
+  color: #DDD;
 }
 
-.theme-switch {
-  width: 44px;
-  height: 24px;
-  background: #E5E7EB;
-  border-radius: 12px;
-  position: relative;
-  cursor: pointer;
-  transition: var(--transition);
+.theme-icon-item.moon {
+  transform: rotate(180deg);
 }
 
-.dark-mode .theme-switch {
-  background: #374151;
-}
-
-.switch-knob {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 20px;
-  height: 20px;
-  background: white;
-  border-radius: 50%;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: var(--shadow-sm);
-}
-
-.switch-knob.right {
-  transform: translateX(20px);
+.theme-toggle-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--charcoal);
+  white-space: nowrap;
 }
 
 .notification-btn {
