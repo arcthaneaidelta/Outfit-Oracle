@@ -1112,13 +1112,14 @@ body:has(.auth-page) {
 }
 
 .theme-icon-item.moon {
-  color: #FEFCD7; /* Realistic creamy lunar color */
-  filter: drop-shadow(0 0 6px rgba(254, 252, 215, 0.6));
+  color: #64748B; /* Realistic daytime slate-gray moon for visibility */
+  filter: drop-shadow(0 0 2px rgba(0,0,0,0.1));
   transform: rotate(160deg); /* Fine-tuned for the crescent shape */
 }
 
 .dark-mode .theme-icon-item.moon {
-  color: #E2E2E2;
+  color: #FEFCD7; /* Glowing creamy night moon */
+  filter: drop-shadow(0 0 8px rgba(254, 252, 215, 0.8));
 }
 
 .theme-toggle-text {
