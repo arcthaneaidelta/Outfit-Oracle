@@ -1,4 +1,4 @@
-import imglyRemoveBackground from '@imgly/background-removal';
+import { removeBackground } from '@imgly/background-removal';
 
 const imageCache = new Map();
 
@@ -9,7 +9,7 @@ export async function processClothingImage(imageUrl) {
   }
 
   try {
-    const imageBlob = await imglyRemoveBackground(imageUrl);
+    const imageBlob = await removeBackground(imageUrl);
     const transparentUrl = URL.createObjectURL(imageBlob);
     imageCache.set(imageUrl, transparentUrl);
     return transparentUrl;
