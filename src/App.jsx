@@ -27,7 +27,7 @@ import LoadingScreen from './components/shared/LoadingScreen';
 import Login from './components/Auth/Login';
 import Signup from './components/Auth/Signup';
 import Sidebar from './components/shared/Sidebar';
-import Dashboard from './components/Dashboard/Dashboard';
+import OracleDashboard from './components/Dashboard/OracleDashboard';
 import Wardrobe from './components/Wardrobe/Wardrobe';
 import OutfitBuilder from './components/OutfitBuilder/OutfitBuilder';
 import Recommendations from './components/Recommendations/Recommendations';
@@ -69,7 +69,7 @@ function AppShell({ theme, toggleTheme }) {
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
-        return <Dashboard wardrobe={items} outfits={outfits} history={history} planner={entries} onNavigate={setActiveTab} theme={theme} toggleTheme={toggleTheme} />;
+        return <OracleDashboard wardrobe={items} outfits={outfits} history={history} planner={entries} onNavigate={setActiveTab} theme={theme} toggleTheme={toggleTheme} />;
       case 'wardrobe':
         return <Wardrobe items={items} addItem={addItem} deleteItem={deleteItem} updateItem={updateItem} />;
       case 'outfit-builder':
