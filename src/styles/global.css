@@ -1063,14 +1063,14 @@ body:has(.auth-page) {
 .theme-animation-wrapper {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
   cursor: pointer;
-  padding: 6px 16px;
+  width: 44px;
+  height: 44px;
   background: var(--cream-dark);
-  border-radius: 99px;
+  border-radius: 50%;
   border: 1px solid var(--cream-darker);
   transition: var(--transition);
-  height: 44px;
   overflow: hidden;
   position: relative;
 }
