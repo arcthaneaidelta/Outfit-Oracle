@@ -2105,6 +2105,299 @@ body:has(.auth-page) {
   transform: scale(1.2);
 }
 
+/* ---- Virtual Try-On Premium System ---- */
+.vto-layout {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 28px;
+  align-items: start;
+}
+
+.vto-preview-panel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at center, var(--cream) 0%, var(--white) 100%);
+  border: 1px solid var(--cream-darker);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  position: relative;
+  min-height: 600px;
+  overflow: hidden;
+}
+
+.vto-avatar-stage {
+  position: relative;
+  width: 200px;
+  height: 500px;
+  display: flex;
+  justify-content: center;
+}
+
+.vto-mannequin-wrapper {
+  position: absolute;
+  inset: 0;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-origin: bottom center;
+}
+
+.vto-mannequin-svg {
+  width: 100%;
+  height: 100%;
+  transition: fill 0.4s ease;
+  filter: drop-shadow(0 10px 15px rgba(0,0,0,0.05));
+}
+
+.vto-layer-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-origin: bottom center;
+}
+
+.vto-layer {
+  position: absolute;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+/* Layer Zones and Scaling */
+.vto-layer-bottom { top: 40%; height: 50%; width: 110%; left: -5%; }
+.vto-layer-top { top: 15%; height: 35%; width: 120%; left: -10%; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1)); }
+.vto-layer-outerwear { top: 13%; height: 45%; width: 130%; left: -15%; filter: drop-shadow(0 8px 15px rgba(0,0,0,0.15)); }
+.vto-layer-shoes { top: 88%; height: 12%; width: 100%; left: 0; }
+
+.vto-item-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+
+.dark-mode .vto-item-img {
+  mix-blend-mode: normal;
+}
+
+.vto-item-emoji-wrapper {
+  font-size: 80px;
+  line-height: 1;
+  opacity: 0.9;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+}
+
+.vto-customization {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  right: 24px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  padding: 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255,255,255,0.4);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.dark-mode .vto-customization {
+  background: rgba(30, 30, 30, 0.8);
+  border-color: rgba(255,255,255,0.05);
+}
+
+.vto-setting-group label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--charcoal-muted);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.vto-options-row {
+  display: flex;
+  gap: 8px;
+}
+
+.vto-color-swatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.2s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.vto-color-swatch.active {
+  transform: scale(1.2);
+  border-color: var(--terracotta);
+}
+
+.vto-pill-btn {
+  padding: 4px 12px;
+  font-size: 12px;
+  border-radius: 99px;
+  border: 1px solid var(--cream-darker);
+  background: var(--white);
+  color: var(--charcoal-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.vto-pill-btn.active {
+  background: var(--terracotta);
+  color: white;
+  border-color: var(--terracotta);
+}
+
+.vto-controls-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.vto-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--cream-darker);
+  margin-bottom: 16px;
+}
+
+.vto-tab {
+  flex: 1;
+  padding: 12px 8px;
+  background: transparent;
+  border: none;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--charcoal-muted);
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.vto-tab.active {
+  color: var(--terracotta);
+}
+
+.vto-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--terracotta);
+}
+
+.vto-tab-indicator {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--terracotta);
+  border-radius: 50%;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.vto-items-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.vto-item-card {
+  border: 2px solid var(--cream-darker);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.vto-item-card:hover {
+  border-color: var(--terracotta-light);
+}
+
+.vto-item-card.selected {
+  border-color: var(--terracotta);
+  background: var(--terracotta-pale);
+}
+
+.vto-item-image-container {
+  aspect-ratio: 1;
+  background: var(--cream-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.vto-item-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vto-emoji-placeholder {
+  font-size: 32px;
+}
+
+.vto-check-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--terracotta);
+  color: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.vto-item-name {
+  padding: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vto-empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 32px 0;
+  color: var(--charcoal-muted);
+  font-size: 13px;
+}
+
+.vto-save-section {
+  background: var(--cream);
+  padding: 20px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--cream-darker);
+}
+
+@media (max-width: 1024px) {
+  .vto-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ---- Responsive ---- */
 @media (max-width: 1200px) {
   .stats-row { grid-template-columns: repeat(2, 1fr); }
