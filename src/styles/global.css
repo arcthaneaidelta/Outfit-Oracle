@@ -1114,7 +1114,7 @@ body:has(.auth-page) {
 .theme-icon-item.moon {
   color: #64748B; /* Realistic daytime slate-gray moon for visibility */
   filter: drop-shadow(0 0 2px rgba(0,0,0,0.1));
-  transform: rotate(160deg); /* Fine-tuned for the crescent shape */
+  transform: rotate(-180deg); /* Counter-rotate to stay upright */
 }
 
 .dark-mode .theme-icon-item.moon {
