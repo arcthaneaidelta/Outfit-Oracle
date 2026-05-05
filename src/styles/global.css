@@ -1112,8 +1112,8 @@ body:has(.auth-page) {
 }
 
 .theme-icon-item.moon {
-  color: #F4F6F0;
-  filter: drop-shadow(0 0 4px rgba(244, 246, 240, 0.4));
+  color: #FEFCD7; /* Realistic creamy lunar color */
+  filter: drop-shadow(0 0 6px rgba(254, 252, 215, 0.6));
   transform: rotate(160deg); /* Fine-tuned for the crescent shape */
 }
 
