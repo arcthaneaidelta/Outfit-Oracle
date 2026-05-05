@@ -1112,13 +1112,13 @@ body:has(.auth-page) {
 }
 
 .theme-icon-item.moon {
-  color: #7DD3FC; /* Glowing blue moon as requested */
-  filter: drop-shadow(0 0 8px rgba(125, 211, 252, 0.7));
-  transform: rotate(160deg); /* Fine-tuned for the crescent shape */
+  color: #003366; /* Deep navy blue moon */
+  filter: drop-shadow(0 0 8px rgba(0, 51, 102, 0.4));
+  transform: rotate(-20deg); /* Upside down orientation */
 }
 
 .dark-mode .theme-icon-item.moon {
-  color: #7DD3FC; /* Keep it blue in dark mode for consistency */
+  color: #003366; /* Consistent deep blue */
 }
 
 .theme-toggle-text {
