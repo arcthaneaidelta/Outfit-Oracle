@@ -2546,7 +2546,6 @@ body:has(.auth-page) {
   .main-content { padding: 24px; }
   .outfit-slots { grid-template-columns: repeat(2, 1fr); }
 }
-}
 
 .vto-gender-toggle {
   display: flex;
