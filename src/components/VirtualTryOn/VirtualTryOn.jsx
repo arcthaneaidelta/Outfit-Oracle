@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import WardrobeSelector from './WardrobeSelector';
 import { useToast } from '../shared/ToastContext';
-import { processClothingImage } from '../../utils/processImage';
 import { chatWithGemini, getAIImageUrl } from '../../utils/geminiApi';
 
 export default function VirtualTryOn({ wardrobe, saveOutfit }) {
@@ -11,7 +10,6 @@ export default function VirtualTryOn({ wardrobe, saveOutfit }) {
   // Selection State
   const [selectedItems, setSelectedItems] = useState({ top: null, bottom: null, shoes: null });
   const [processedImages, setProcessedImages] = useState({ top: null, bottom: null, shoes: null });
-  const [isProcessing, setIsProcessing] = useState(false);
 
   // Chat State
   const [messages, setMessages] = useState([
@@ -43,10 +41,7 @@ export default function VirtualTryOn({ wardrobe, saveOutfit }) {
     setSelectedItems(prev => ({ ...prev, [slot]: item }));
     
     if (item.imageUrl) {
-      setIsProcessing(true);
-      const transparentUrl = await processClothingImage(item.imageUrl);
-      setProcessedImages(prev => ({ ...prev, [slot]: transparentUrl }));
-      setIsProcessing(false);
+      setProcessedImages(prev => ({ ...prev, [slot]: item.imageUrl }));
     }
   };
 
