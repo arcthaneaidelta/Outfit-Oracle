@@ -1,29 +1,42 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const genAI = new GoogleGenerativeAI(API_KEY);
+const genAI = new GoogleGenerativeAI(API_KEY || "");
 
 export async function chatWithGemini(userMessage, selectedItems, processedImages) {
   try {
+    if (!API_KEY) {
+      throw new Error("Missing Gemini API Key. Please add VITE_GEMINI_API_KEY to Netlify environment variables.");
+    }
+
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    // Prepare image data for Gemini Vision if items are selected
+    // Prepare image data for Gemini Vision
     const imageParts = [];
     for (const [cat, url] of Object.entries(processedImages)) {
       if (url) {
-        const response = await fetch(url);
-        const blob = await response.blob();
-        const base64Data = await new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result.split(',')[1]);
-          reader.readAsDataURL(blob);
-        });
-        imageParts.push({
-          inlineData: {
-            data: base64Data,
-            mimeType: "image/png",
-          },
-        });
+        try {
+          // Attempt to fetch image. If it fails (CORS), we just skip it rather than crashing the whole chat.
+          const response = await fetch(url, { mode: 'no-cors' }); 
+          // Note: 'no-cors' will return an opaque response which doesn't allow reading blob.
+          // Better approach: just fetch and if it fails, catch it.
+          const realResponse = await fetch(url);
+          const blob = await realResponse.blob();
+          const base64Data = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result.split(',')[1]);
+            reader.readAsDataURL(blob);
+          });
+          imageParts.push({
+            inlineData: {
+              data: base64Data,
+              mimeType: "image/png",
+            },
+          });
+        } catch (imgErr) {
+          console.warn(`Could not process image for ${cat}:`, imgErr);
+          // We continue so the chat still works even if one image fails
+        }
       }
     }
 
@@ -35,27 +48,36 @@ export async function chatWithGemini(userMessage, selectedItems, processedImages
       Instructions:
       1. Analyze the attached clothing images (if any).
       2. Based on the user's description (height, skin tone, body type), write a SHORT, highly descriptive prompt for an image generator (like DALL-E) to create a photorealistic fashion editorial photo of a person wearing these exact clothes.
-      3. Your response should be in JSON format:
+      3. Your response MUST be a valid JSON object.
+      
+      Response Format:
       {
-        "aiResponse": "Brief friendly styling advice or confirmation",
-        "imagePrompt": "The detailed photorealistic prompt for the model wearing the clothes"
+        "aiResponse": "Brief friendly styling advice",
+        "imagePrompt": "The detailed photorealistic prompt"
       }
     `;
 
     const result = await model.generateContent([prompt, ...imageParts]);
     const responseText = result.response.text();
     
-    // Clean JSON from response (Gemini sometimes adds markdown blocks)
-    const jsonStr = responseText.replace(/```json|```/g, "").trim();
-    return JSON.parse(jsonStr);
+    // Improved JSON Extraction
+    try {
+      const cleanJson = responseText.match(/\{[\s\S]*\}/)?.[0] || responseText;
+      return JSON.parse(cleanJson);
+    } catch (e) {
+      // Fallback if Gemini returns plain text
+      return {
+        aiResponse: responseText,
+        imagePrompt: userMessage // Use user message as fallback prompt
+      };
+    }
   } catch (error) {
-    console.error("Gemini Error:", error);
-    throw new Error("Failed to chat with AI Stylist.");
+    console.error("Gemini API Error:", error);
+    throw error;
   }
 }
 
 export function getAIImageUrl(prompt) {
-  // Use Pollinations.ai for free instant image generation
   const encodedPrompt = encodeURIComponent(prompt + " photorealistic fashion editorial, studio lighting, 8k, high quality");
   return `https://image.pollinations.ai/prompt/${encodedPrompt}?width=512&height=768&nologo=true&seed=${Math.floor(Math.random() * 1000)}`;
 }
