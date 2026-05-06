@@ -44,18 +44,18 @@ export async function analyzeGarment(imageUrl, category) {
 
       const cat = category.toLowerCase();
       if (cat.includes('bottom') || cat === 'pants' || cat === 'jeans') {
-        targetBBoxWidthPerc = 0.45; // Pants cover ~45% of dummy width
-        anchorYPerc = 0.45; // Waist is at Y=225
+        targetBBoxWidthPerc = 0.60; // Significantly increased (Pants cover 60% of width)
+        anchorYPerc = 0.44; // Anchor firmly at waist
       } else if (cat.includes('shoe')) {
-        targetBBoxWidthPerc = 0.50;
+        targetBBoxWidthPerc = 0.65;
         anchorYPerc = 0.88; 
       } else {
         // Tops or Outerwear
-        targetBBoxWidthPerc = 0.65; // Shirts cover ~65% of dummy width
-        anchorYPerc = 0.17; // Neck is at Y=85
+        targetBBoxWidthPerc = 0.85; // Massive increase to easily cover shoulders and look natural
+        anchorYPerc = 0.16; // Neck anchor
         if (cat.includes('outerwear') || cat.includes('jacket')) {
-          targetBBoxWidthPerc = 0.75;
-          anchorYPerc = 0.16;
+          targetBBoxWidthPerc = 0.95;
+          anchorYPerc = 0.15;
         }
       }
 
