@@ -2371,7 +2371,6 @@ body:has(.auth-page) {
   color: white;
   background: rgba(255, 255, 255, 0.05);
 }
-
 .tuning-panel {
   background: rgba(255, 255, 255, 0.03);
   padding: 16px;
@@ -2379,31 +2378,26 @@ body:has(.auth-page) {
   border: 1px solid rgba(255, 255, 255, 0.08);
   margin-top: 20px;
 }
-
 .tuning-controls {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
-
 .tuning-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 10px;
 }
-
 .tuning-row span {
   font-size: 0.75rem;
   color: #888;
   width: 50px;
 }
-
 .tuning-row input[type='range'] {
   flex: 1;
   accent-color: var(--accent-primary);
 }
-
 .tuning-hint {
   font-size: 0.7rem;
   color: #666;
