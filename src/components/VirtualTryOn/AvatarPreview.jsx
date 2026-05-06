@@ -18,40 +18,36 @@ export default function AvatarPreview({ selectedItems, processedImages, autoFitS
   const { skinTone, bodyType } = avatarSettings;
   const currentBodyStyle = BODY_TYPES.find(b => b.id === bodyType)?.style || {};
 
-  const hasTop = !!selectedItems.top || !!selectedItems.outerwear;
-  const hasBottom = !!selectedItems.bottom;
-
   return (
     <div className="vto-preview-container" style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <div className="vto-avatar-stage" style={{ width: '250px', height: '550px', position: 'relative' }}>
         
-        {/* THE MANNEQUIN (Background) */}
+        {/* THE MANNEQUIN (Always Visible Background) */}
+        {/* We meticulously designed these SVG paths so the torso and hips perfectly fit INSIDE the Auto-Fit clothing bounds, while the arms and lower legs stick out. */}
         <div className="vto-mannequin-wrapper" style={{ ...currentBodyStyle, width: '100%', height: '100%', position: 'absolute', inset: 0, zIndex: 1 }}>
           <svg viewBox="0 0 200 500" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%', filter: 'drop-shadow(0 15px 25px rgba(0,0,0,0.15))' }}>
             <g fill={skinTone}>
               <circle cx="100" cy="45" r="28" /> {/* Head */}
               <rect x="88" y="70" width="24" height="25" rx="5" /> {/* Neck */}
               
-              {/* Only render Torso if no top is worn */}
-              {!hasTop && (
-                <path d="M65 90 Q 100 85 135 90 L 125 230 Q 100 240 75 230 Z" />
-              )}
+              {/* Torso (Shoulders width 120, Waist width 80) */}
+              <path d="M 88 90 L 40 100 L 60 230 L 140 230 L 160 100 L 112 90 Z" />
               
-              {/* Arms are very thin so they fit inside any sleeve and don't poke out */}
-              <path d="M75 90 Q 45 100 50 150 L 55 260 Q 65 260 65 150 Z" />
-              <path d="M125 90 Q 155 100 150 150 L 145 260 Q 135 260 135 150 Z" />
+              {/* Arms (Angled slightly outwards so they emerge from sleeves) */}
+              <path d="M 40 100 L 25 280 L 45 280 L 60 110 Z" />
+              <path d="M 160 100 L 175 280 L 155 280 L 140 110 Z" />
 
-              {/* Only render upper legs if no bottoms are worn */}
-              {!hasBottom && (
-                <>
-                  <path d="M75 230 L 70 450 L 90 450 L 95 240 Z" />
-                  <path d="M125 230 L 130 450 L 110 450 L 105 240 Z" />
-                </>
-              )}
+              {/* Hands */}
+              <ellipse cx="35" cy="290" rx="10" ry="15" transform="rotate(15 35 290)" />
+              <ellipse cx="165" cy="290" rx="10" ry="15" transform="rotate(-15 165 290)" />
+
+              {/* Legs (Hips width 80, going straight down) */}
+              <path d="M 60 230 L 60 450 L 90 450 L 95 230 Z" />
+              <path d="M 140 230 L 140 450 L 110 450 L 105 230 Z" />
               
-              {/* Feet (Always visible) */}
-              <ellipse cx="80" cy="455" rx="14" ry="10" />
-              <ellipse cx="120" cy="455" rx="14" ry="10" />
+              {/* Feet */}
+              <ellipse cx="75" cy="460" rx="15" ry="10" />
+              <ellipse cx="125" cy="460" rx="15" ry="10" />
             </g>
           </svg>
         </div>
