@@ -15,13 +15,16 @@ export async function analyzeGarment(imageUrl, category) {
       const data = imageData.data;
 
       let minX = canvas.width, minY = canvas.height, maxX = 0, maxY = 0;
+      let minX_pixel = { x: canvas.width, y: 0 };
+      let maxX_pixel = { x: 0, y: 0 };
 
+      // Pass 1: Find main bounding box and sleeve tips
       for (let y = 0; y < canvas.height; y++) {
         for (let x = 0; x < canvas.width; x++) {
           const alpha = data[(y * canvas.width + x) * 4 + 3];
-          if (alpha > 10) { // Filter out extremely faint noise
-            if (x < minX) minX = x;
-            if (x > maxX) maxX = x;
+          if (alpha > 10) { 
+            if (x < minX) { minX = x; minX_pixel = { x, y }; }
+            if (x > maxX) { maxX = x; maxX_pixel = { x, y }; }
             if (y < minY) minY = y;
             if (y > maxY) maxY = y;
           }
@@ -29,13 +32,37 @@ export async function analyzeGarment(imageUrl, category) {
       }
 
       if (minX > maxX || minY > maxY) {
-        resolve({}); // Fallback
+        resolve({}); 
         return;
       }
 
       const bboxWidth = maxX - minX;
       const bboxHeight = maxY - minY;
       
+      let leftHalfMaxY = 0;
+      let leftHalfMaxY_pixel = { x: 0, y: 0 };
+      let rightHalfMaxY = 0;
+      let rightHalfMaxY_pixel = { x: 0, y: 0 };
+      
+      const midX = minX + (bboxWidth / 2);
+
+      // Pass 2: Find leg holes (lowest pixels in left/right halves)
+      for (let y = 0; y < canvas.height; y++) {
+        for (let x = 0; x < canvas.width; x++) {
+          const alpha = data[(y * canvas.width + x) * 4 + 3];
+          if (alpha > 10) {
+            if (x <= midX && y > leftHalfMaxY) {
+              leftHalfMaxY = y;
+              leftHalfMaxY_pixel = { x, y };
+            }
+            if (x > midX && y > rightHalfMaxY) {
+              rightHalfMaxY = y;
+              rightHalfMaxY_pixel = { x, y };
+            }
+          }
+        }
+      }
+
       const DUMMY_STAGE_WIDTH = 200;
       const DUMMY_STAGE_HEIGHT = 500;
       
@@ -43,16 +70,17 @@ export async function analyzeGarment(imageUrl, category) {
       let anchorYPerc;
 
       const cat = category.toLowerCase();
-      if (cat.includes('bottom') || cat === 'pants' || cat === 'jeans') {
-        targetBBoxWidthPerc = 0.60; // Significantly increased (Pants cover 60% of width)
-        anchorYPerc = 0.44; // Anchor firmly at waist
+      const isBottom = cat.includes('bottom') || cat === 'pants' || cat === 'jeans';
+
+      if (isBottom) {
+        targetBBoxWidthPerc = 0.60; 
+        anchorYPerc = 0.44; 
       } else if (cat.includes('shoe')) {
         targetBBoxWidthPerc = 0.65;
         anchorYPerc = 0.88; 
       } else {
-        // Tops or Outerwear
-        targetBBoxWidthPerc = 0.85; // Massive increase to easily cover shoulders and look natural
-        anchorYPerc = 0.16; // Neck anchor
+        targetBBoxWidthPerc = 0.85; 
+        anchorYPerc = 0.16; 
         if (cat.includes('outerwear') || cat.includes('jacket')) {
           targetBBoxWidthPerc = 0.95;
           anchorYPerc = 0.15;
@@ -75,12 +103,23 @@ export async function analyzeGarment(imageUrl, category) {
       const leftPx = stageCenterX - (scaledBBoxMinX + scaledBBoxWidth / 2);
       const topPx = stageAnchorY - scaledBBoxMinY;
 
+      // Calculate SVG Coordinates for the joints
+      const joints = {};
+      if (isBottom) {
+        joints.leftLeg = { x: leftPx + (leftHalfMaxY_pixel.x * scale), y: topPx + (leftHalfMaxY_pixel.y * scale) };
+        joints.rightLeg = { x: leftPx + (rightHalfMaxY_pixel.x * scale), y: topPx + (rightHalfMaxY_pixel.y * scale) };
+      } else {
+        joints.leftSleeve = { x: leftPx + (minX_pixel.x * scale), y: topPx + (minX_pixel.y * scale) };
+        joints.rightSleeve = { x: leftPx + (maxX_pixel.x * scale), y: topPx + (maxX_pixel.y * scale) };
+      }
+
       resolve({
         width: `${(scaledImgWidth / DUMMY_STAGE_WIDTH) * 100}%`,
         height: `${(scaledImgHeight / DUMMY_STAGE_HEIGHT) * 100}%`,
         left: `${(leftPx / DUMMY_STAGE_WIDTH) * 100}%`,
         top: `${(topPx / DUMMY_STAGE_HEIGHT) * 100}%`,
-        position: 'absolute'
+        position: 'absolute',
+        joints // Pass joints data to the frontend
       });
     };
     img.onerror = () => resolve({});
