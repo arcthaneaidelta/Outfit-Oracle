@@ -69,7 +69,7 @@ export default function VirtualTryOn({ wardrobe, saveOutfit }) {
         }]);
       }
     } catch (err) {
-      addToast("AI Stylist is temporarily unavailable.", "error");
+      addToast(err.message || "AI Stylist is temporarily unavailable.", "error");
     } finally {
       setIsAILoading(false);
     }

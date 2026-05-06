@@ -6,7 +6,7 @@ const genAI = new GoogleGenerativeAI(API_KEY || "");
 export async function chatWithGemini(userMessage, selectedItems, processedImages) {
   try {
     if (!API_KEY) {
-      throw new Error("Missing Gemini API Key. Please add VITE_GEMINI_API_KEY to Netlify environment variables.");
+      throw new Error("Gemini API Key is missing. Please add VITE_GEMINI_API_KEY to your Netlify Environment Variables.");
     }
 
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
