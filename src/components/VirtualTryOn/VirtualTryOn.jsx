@@ -65,7 +65,7 @@ export default function VirtualTryOn({ wardrobe, saveOutfit }) {
         try {
           // Pass current model (or default for gender)
           const currentBase = generatedModelImage || MODELS[gender];
-          const newAiImage = await generateAITryOn(transparentUrl, categorySlot, currentBase);
+          const newAiImage = await generateAITryOn(transparentUrl, item.name, currentBase);
           if (newAiImage) {
             setGeneratedModelImage(newAiImage);
             addToast("AI Fitting Complete!", "success");

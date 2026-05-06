@@ -1,59 +1,49 @@
 import { client } from "@gradio/client";
 
-// High-quality default models from OOTDiffusion examples
 export const MODELS = {
-  female: "https://levihsu-ootdiffusion.hf.space/file=/tmp/gradio/2e0cca23e744c036b3905c4b6167371632942e1c/model_1.png",
+  female: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=800",
   male: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=800"
 };
 
 export const DEFAULT_MODEL_IMG_URL = MODELS.female;
 
-export async function generateAITryOn(garmentImageUrl, category, baseModelUrl = null) {
+export async function generateAITryOn(garmentImageUrl, garmentName, baseModelUrl = null) {
   try {
-    const app = await client("levihsu/OOTDiffusion");
+    // Switching to IDM-VTON as it is 100% better at preserving clothing details (no reimagining)
+    const app = await client("yisol/IDM-VTON");
     
-    const catLower = category.toLowerCase();
-    const isBottom = catLower.includes('bottom') || catLower === 'pants' || catLower === 'jeans';
-    
-    // Convert clothing image URL to Blob for the Gradio client
+    // Convert clothing image URL to Blob
     const garmentResponse = await fetch(garmentImageUrl);
     const garmentBlob = await garmentResponse.blob();
 
-    // Convert model image URL to Blob (use provided base model or default)
+    // Convert model image URL to Blob
     const modelToUse = baseModelUrl || DEFAULT_MODEL_IMG_URL;
     const modelResponse = await fetch(modelToUse);
     const modelBlob = await modelResponse.blob();
 
-    let result;
-    if (isBottom) {
-      result = await app.predict("/process_dc", [
-        modelBlob,
-        garmentBlob,
-        "Lower-body", // Category
-        1,            // n_samples
-        20,           // n_steps
-        3.5,          // image_scale (Increased to follow input strictly)
-        -1            // seed
-      ]);
-    } else {
-      result = await app.predict("/process_hd", [
-        modelBlob,
-        garmentBlob,
-        1,            // n_samples
-        20,           // n_steps
-        3.5,          // image_scale (Increased to follow input strictly)
-        -1            // seed
-      ]);
-    }
+    const result = await app.predict("/tryon", [
+      { 
+        background: modelBlob, 
+        layers: [], 
+        composite: null 
+      },
+      garmentBlob, 
+      garmentName || "clothing item", // Help the AI know exactly what it is
+      true,  // is_checked (auto-masking)
+      false, // is_checked_crop
+      30,    // denoise_steps
+      42     // seed
+    ]);
 
     // Parse the output to get the generated image URL
-    if (result && result.data && result.data[0] && result.data[0].length > 0) {
-      return result.data[0][0].image.url;
+    if (result && result.data && result.data[0]) {
+      return result.data[0].url;
     }
     
     return null;
   } catch (error) {
-    console.error("OOTDiffusion API Error:", error);
-    throw new Error("Failed to generate AI Try-On. The public server might be busy.");
+    console.error("IDM-VTON API Error:", error);
+    // If IDM-VTON is overloaded, we can fallback or throw
+    throw new Error("AI engine is busy. Please try again in a few seconds.");
   }
 }
