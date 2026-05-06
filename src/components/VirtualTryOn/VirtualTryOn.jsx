@@ -3,6 +3,7 @@ import AvatarPreview from './AvatarPreview';
 import WardrobeSelector from './WardrobeSelector';
 import { useToast } from '../shared/ToastContext';
 import { processClothingImage } from '../../utils/processImage';
+import { analyzeGarment } from '../../utils/autoFit';
 
 export default function VirtualTryOn({ wardrobe, saveOutfit }) {
   const { addToast } = useToast();
@@ -23,6 +24,13 @@ export default function VirtualTryOn({ wardrobe, saveOutfit }) {
     outerwear: null,
   });
 
+  const [autoFitStyles, setAutoFitStyles] = useState({
+    top: {},
+    bottom: {},
+    shoes: {},
+    outerwear: {},
+  });
+
   const [avatarSettings, setAvatarSettings] = useState({
     skinTone: '#e3c2a4', // Default medium-light
     bodyType: 'average', // slim, average, muscular, plus-size
@@ -37,6 +45,7 @@ export default function VirtualTryOn({ wardrobe, saveOutfit }) {
     if (selectedItems[categorySlot]?.id === item.id) {
       setSelectedItems(prev => ({ ...prev, [categorySlot]: null }));
       setProcessedImages(prev => ({ ...prev, [categorySlot]: null }));
+      setAutoFitStyles(prev => ({ ...prev, [categorySlot]: {} }));
       return;
     }
 
@@ -47,9 +56,15 @@ export default function VirtualTryOn({ wardrobe, saveOutfit }) {
       setIsProcessing(true);
       const transparentUrl = await processClothingImage(item.imageUrl);
       setProcessedImages(prev => ({ ...prev, [categorySlot]: transparentUrl }));
+      
+      // Run Auto-Fit AI
+      const fitStyle = await analyzeGarment(transparentUrl, categorySlot);
+      setAutoFitStyles(prev => ({ ...prev, [categorySlot]: fitStyle }));
+      
       setIsProcessing(false);
     } else {
       setProcessedImages(prev => ({ ...prev, [categorySlot]: null }));
+      setAutoFitStyles(prev => ({ ...prev, [categorySlot]: {} }));
     }
   };
 
@@ -105,6 +120,7 @@ export default function VirtualTryOn({ wardrobe, saveOutfit }) {
           <AvatarPreview 
             selectedItems={selectedItems} 
             processedImages={processedImages}
+            autoFitStyles={autoFitStyles}
             avatarSettings={avatarSettings} 
             onSettingsChange={(settings) => setAvatarSettings(prev => ({ ...prev, ...settings }))}
           />

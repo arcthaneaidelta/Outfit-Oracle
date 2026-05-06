@@ -14,9 +14,12 @@ const BODY_TYPES = [
   { id: 'plus-size', label: 'Plus-Size', style: { transform: 'scaleX(1.3)' } }
 ];
 
-export default function AvatarPreview({ selectedItems, processedImages, avatarSettings, onSettingsChange }) {
+export default function AvatarPreview({ selectedItems, processedImages, autoFitStyles, avatarSettings, onSettingsChange }) {
   const { skinTone, bodyType } = avatarSettings;
   const currentBodyStyle = BODY_TYPES.find(b => b.id === bodyType)?.style || {};
+
+  const hasTop = !!selectedItems.top || !!selectedItems.outerwear;
+  const hasBottom = !!selectedItems.bottom;
 
   return (
     <div className="vto-preview-container" style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -26,34 +29,38 @@ export default function AvatarPreview({ selectedItems, processedImages, avatarSe
         <div className="vto-mannequin-wrapper" style={{ ...currentBodyStyle, width: '100%', height: '100%', position: 'absolute', inset: 0, zIndex: 1 }}>
           <svg viewBox="0 0 200 500" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%', filter: 'drop-shadow(0 15px 25px rgba(0,0,0,0.15))' }}>
             <g fill={skinTone}>
-              <circle cx="100" cy="50" r="28" /> {/* Head */}
+              <circle cx="100" cy="45" r="28" /> {/* Head */}
               <rect x="88" y="70" width="24" height="25" rx="5" /> {/* Neck */}
               
-              {/* Torso */}
-              <path d="M65 90 Q 100 85 135 90 L 135 230 Q 100 240 65 230 Z" />
+              {/* Only render Torso if no top is worn */}
+              {!hasTop && (
+                <path d="M65 90 Q 100 85 135 90 L 125 230 Q 100 240 75 230 Z" />
+              )}
               
-              {/* L Arm (Hanging down) */}
-              <path d="M65 90 Q 40 100 45 150 L 50 260 Q 60 260 65 150 Z" />
-              
-              {/* R Arm (Hanging down) */}
-              <path d="M135 90 Q 160 100 155 150 L 150 260 Q 140 260 135 150 Z" />
+              {/* Arms are very thin so they fit inside any sleeve and don't poke out */}
+              <path d="M75 90 Q 45 100 50 150 L 55 260 Q 65 260 65 150 Z" />
+              <path d="M125 90 Q 155 100 150 150 L 145 260 Q 135 260 135 150 Z" />
 
-              {/* Legs */}
-              <path d="M65 230 L 60 450 L 90 450 L 95 240 Z" />
-              <path d="M135 230 L 140 450 L 110 450 L 105 240 Z" />
+              {/* Only render upper legs if no bottoms are worn */}
+              {!hasBottom && (
+                <>
+                  <path d="M75 230 L 70 450 L 90 450 L 95 240 Z" />
+                  <path d="M125 230 L 130 450 L 110 450 L 105 240 Z" />
+                </>
+              )}
               
-              {/* Feet */}
-              <ellipse cx="75" cy="455" rx="18" ry="12" />
-              <ellipse cx="125" cy="455" rx="18" ry="12" />
+              {/* Feet (Always visible) */}
+              <ellipse cx="80" cy="455" rx="14" ry="10" />
+              <ellipse cx="120" cy="455" rx="14" ry="10" />
             </g>
           </svg>
         </div>
 
-        {/* CLOTHING LAYERS (Transparent PNGs from AI) */}
+        {/* CLOTHING LAYERS (Transparent PNGs positioned by Auto-Fit AI) */}
         
         {/* Layer 1: Bottoms */}
         {selectedItems.bottom && (
-          <div className="vto-clothing-layer" style={{ zIndex: 2, top: '40%', height: '55%', width: '120%', left: '-10%', ...currentBodyStyle }}>
+          <div className="vto-clothing-layer" style={{ zIndex: 2, ...currentBodyStyle, ...autoFitStyles.bottom }}>
             {processedImages.bottom ? (
               <img src={processedImages.bottom} alt="Bottom" />
             ) : (
@@ -64,7 +71,7 @@ export default function AvatarPreview({ selectedItems, processedImages, avatarSe
 
         {/* Layer 2: Tops */}
         {selectedItems.top && (
-          <div className="vto-clothing-layer" style={{ zIndex: 3, top: '15%', height: '40%', width: '130%', left: '-15%', ...currentBodyStyle }}>
+          <div className="vto-clothing-layer" style={{ zIndex: 3, ...currentBodyStyle, ...autoFitStyles.top }}>
             {processedImages.top ? (
               <img src={processedImages.top} alt="Top" />
             ) : (
@@ -75,7 +82,7 @@ export default function AvatarPreview({ selectedItems, processedImages, avatarSe
 
         {/* Layer 3: Outerwear */}
         {selectedItems.outerwear && (
-          <div className="vto-clothing-layer" style={{ zIndex: 4, top: '13%', height: '45%', width: '140%', left: '-20%', ...currentBodyStyle }}>
+          <div className="vto-clothing-layer" style={{ zIndex: 4, ...currentBodyStyle, ...autoFitStyles.outerwear }}>
             {processedImages.outerwear ? (
               <img src={processedImages.outerwear} alt="Outerwear" />
             ) : (
@@ -86,7 +93,7 @@ export default function AvatarPreview({ selectedItems, processedImages, avatarSe
 
         {/* Layer 4: Shoes */}
         {selectedItems.shoes && (
-          <div className="vto-clothing-layer" style={{ zIndex: 5, top: '88%', height: '12%', width: '100%', left: '0', ...currentBodyStyle }}>
+          <div className="vto-clothing-layer" style={{ zIndex: 5, ...currentBodyStyle, ...autoFitStyles.shoes }}>
             {processedImages.shoes ? (
               <img src={processedImages.shoes} alt="Shoes" />
             ) : (
