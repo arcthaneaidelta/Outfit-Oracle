@@ -3,7 +3,7 @@ import WardrobeSelector from './WardrobeSelector';
 import AvatarPreview from './AvatarPreview';
 import { useToast } from '../shared/ToastContext';
 import { processClothingImage } from '../../utils/processImage';
-import { generateAITryOn } from '../../utils/ootDiffusionApi';
+import { generateAITryOn, MODELS } from '../../utils/ootDiffusionApi';
 
 export default function VirtualTryOn({ wardrobe, saveOutfit }) {
   const { addToast } = useToast();
@@ -21,11 +21,17 @@ export default function VirtualTryOn({ wardrobe, saveOutfit }) {
     outerwear: null,
   });
 
+  const [gender, setGender] = useState('female');
   const [generatedModelImage, setGeneratedModelImage] = useState(null);
   const [isAIGenerating, setIsAIGenerating] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
   const [outfitName, setOutfitName] = useState('');
+
+  // When gender changes, reset the generated image to the new default model
+  useEffect(() => {
+    setGeneratedModelImage(null);
+  }, [gender]);
 
   const handleSelectItem = async (category, item) => {
     // Map custom categories to available slots
@@ -37,8 +43,6 @@ export default function VirtualTryOn({ wardrobe, saveOutfit }) {
     if (selectedItems[categorySlot]?.id === item.id) {
       setSelectedItems(prev => ({ ...prev, [categorySlot]: null }));
       setProcessedImages(prev => ({ ...prev, [categorySlot]: null }));
-      // We don't revert the AI image automatically to avoid losing 20s of work, 
-      // but maybe we should clear it if they unselect everything?
       return;
     }
 
@@ -55,13 +59,13 @@ export default function VirtualTryOn({ wardrobe, saveOutfit }) {
       setProcessedImages(prev => ({ ...prev, [categorySlot]: transparentUrl }));
       setIsProcessing(false);
 
-      // Skip shoes for OOTDiffusion as it only supports tops/bottoms
       if (categorySlot !== 'shoes') {
         setIsAIGenerating(true);
         addToast("Generative AI is fitting the garment... (takes ~20s)", "info");
         try {
-          // Pass the currently generated image as the base so we can chain outfits!
-          const newAiImage = await generateAITryOn(transparentUrl, categorySlot, generatedModelImage);
+          // Pass current model (or default for gender)
+          const currentBase = generatedModelImage || MODELS[gender];
+          const newAiImage = await generateAITryOn(transparentUrl, categorySlot, currentBase);
           if (newAiImage) {
             setGeneratedModelImage(newAiImage);
             addToast("AI Fitting Complete!", "success");
@@ -90,23 +94,31 @@ export default function VirtualTryOn({ wardrobe, saveOutfit }) {
     saveOutfit({
       name: outfitName,
       items: selectedItems,
-      generatedImage: generatedModelImage // Save the AI result!
+      generatedImage: generatedModelImage 
     });
     
     setOutfitName('');
     addToast('Outfit saved successfully!', 'success');
   };
 
-  useEffect(() => {
-    console.log("!!! VIRTUAL TRY ON: GENERATIVE AI MODE ACTIVE !!!");
-  }, []);
-
   return (
     <div className="vto-layout">
       {/* LEFT PANEL - AVATAR & CONTROLS */}
       <div className="vto-main-panel glass-panel">
         <div className="vto-avatar-section">
-          {/* Show loader during API calls */}
+          
+          {/* Gender Toggle */}
+          <div className="vto-gender-toggle">
+             <button 
+               className={gender === 'female' ? 'active' : ''} 
+               onClick={() => setGender('female')}
+             >Girl</button>
+             <button 
+               className={gender === 'male' ? 'active' : ''} 
+               onClick={() => setGender('male')}
+             >Boy</button>
+          </div>
+
           {(isProcessing || isAIGenerating) && (
             <div className="vto-processing-overlay">
               <div className="vto-spinner"></div>
@@ -117,6 +129,7 @@ export default function VirtualTryOn({ wardrobe, saveOutfit }) {
           <AvatarPreview 
             selectedItems={selectedItems} 
             generatedModelImage={generatedModelImage}
+            defaultModel={MODELS[gender]}
           />
         </div>
       </div>

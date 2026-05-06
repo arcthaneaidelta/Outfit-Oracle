@@ -1,14 +1,14 @@
 import React from 'react';
-import { DEFAULT_MODEL_IMG_URL } from '../../utils/ootDiffusionApi';
 import { getCategoryEmoji } from '../../utils/recommendations';
 
-export default function AvatarPreview({ selectedItems, generatedModelImage }) {
+export default function AvatarPreview({ selectedItems, generatedModelImage, defaultModel }) {
   
-  // Use the AI generated image if available, otherwise fallback to the high-quality default model
-  const displayImage = generatedModelImage || DEFAULT_MODEL_IMG_URL;
+  // Use the AI generated image if available, otherwise fallback to the provided default model
+  const displayImage = generatedModelImage || defaultModel;
 
   return (
     <div className="vto-preview-container" style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+      
       <div className="vto-ai-stage" style={{ width: '100%', maxWidth: '350px', position: 'relative', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }}>
         
         {/* Photorealistic AI Output */}
