@@ -27,7 +27,7 @@ export default function VirtualTryOn({ wardrobe, saveOutfit }) {
 
   const [outfitName, setOutfitName] = useState('');
 
-  const handleSelectItem = async (item, category) => {
+  const handleSelectItem = async (category, item) => {
     // Map custom categories to available slots
     let categorySlot = category.toLowerCase();
     if (categorySlot === 'pants' || categorySlot === 'bottoms') categorySlot = 'bottom';
