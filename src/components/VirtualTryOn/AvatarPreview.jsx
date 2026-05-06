@@ -9,9 +9,6 @@ export default function AvatarPreview({ selectedItems, generatedModelImage }) {
 
   return (
     <div className="vto-preview-container" style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ color: 'red', fontSize: '12px', fontWeight: 'bold', marginBottom: '10px' }}>
-        GENERATIVE AI PREVIEW MODE
-      </div>
       <div className="vto-ai-stage" style={{ width: '100%', maxWidth: '350px', position: 'relative', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }}>
         
         {/* Photorealistic AI Output */}

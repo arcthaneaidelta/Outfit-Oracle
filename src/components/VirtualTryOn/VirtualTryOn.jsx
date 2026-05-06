@@ -103,9 +103,6 @@ export default function VirtualTryOn({ wardrobe, saveOutfit }) {
 
   return (
     <div className="vto-layout">
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, background: 'red', color: 'white', textAlign: 'center', zIndex: 999, fontSize: '10px', padding: '2px' }}>
-        DEBUG: AI ENGINE LOADED (If you see this, you are on the LATEST version)
-      </div>
       {/* LEFT PANEL - AVATAR & CONTROLS */}
       <div className="vto-main-panel glass-panel">
         <div className="vto-avatar-section">
