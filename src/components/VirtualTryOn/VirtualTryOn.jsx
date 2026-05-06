@@ -9,33 +9,12 @@ import { analyzeGarment } from '../../utils/autoFit';
 export default function VirtualTryOn({ wardrobe, saveOutfit }) {
   const { addToast } = useToast();
   
-  // 1. Clothing State
-  const [selectedItems, setSelectedItems] = useState({
-    top: null,
-    bottom: null,
-    shoes: null,
-    outerwear: null,
-  });
-
-  const [processedImages, setProcessedImages] = useState({
-    top: null,
-    bottom: null,
-    shoes: null,
-    outerwear: null,
-  });
-
-  const [autoFitStyles, setAutoFitStyles] = useState({
-    top: {},
-    bottom: {},
-    shoes: {},
-    outerwear: {},
-  });
-
-  // 2. Avatar State
-  const [avatarSettings, setAvatarSettings] = useState({
-    skinTone: '#fcdfb6', // Default: Light
-    bodyType: 'regular',  // Default: Regular
-  });
+  const [selectedItems, setSelectedItems] = useState({ top: null, bottom: null, shoes: null });
+  const [processedImages, setProcessedImages] = useState({ top: null, bottom: null, shoes: null });
+  const [autoFitStyles, setAutoFitStyles] = useState({ top: {}, bottom: {}, shoes: {} });
+  
+  const [activeCategory, setActiveCategory] = useState(null);
+  const [avatarSettings, setAvatarSettings] = useState({ skinTone: '#fcdfb6', bodyType: 'regular' });
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [outfitName, setOutfitName] = useState('');
@@ -45,24 +24,22 @@ export default function VirtualTryOn({ wardrobe, saveOutfit }) {
     if (categorySlot === 'pants' || categorySlot === 'bottoms') categorySlot = 'bottom';
     if (categorySlot === 'shirts' || categorySlot === 'tops') categorySlot = 'top';
 
-    // Toggle off if same item selected
     if (selectedItems[categorySlot]?.id === item.id) {
       setSelectedItems(prev => ({ ...prev, [categorySlot]: null }));
       setProcessedImages(prev => ({ ...prev, [categorySlot]: null }));
       setAutoFitStyles(prev => ({ ...prev, [categorySlot]: {} }));
+      setActiveCategory(null);
       return;
     }
 
     setSelectedItems(prev => ({ ...prev, [categorySlot]: item }));
+    setActiveCategory(categorySlot);
 
     if (item.imageUrl) {
       setIsProcessing(true);
       try {
-        // Remove background locally
         const transparentUrl = await processClothingImage(item.imageUrl);
         setProcessedImages(prev => ({ ...prev, [categorySlot]: transparentUrl }));
-        
-        // Calculate auto-fit coordinates (the 2D logic)
         const styles = await analyzeGarment(transparentUrl, categorySlot);
         setAutoFitStyles(prev => ({ ...prev, [categorySlot]: styles }));
       } catch (err) {
@@ -71,6 +48,13 @@ export default function VirtualTryOn({ wardrobe, saveOutfit }) {
         setIsProcessing(false);
       }
     }
+  };
+
+  const handleTune = (category, property, value) => {
+    setAutoFitStyles(prev => ({
+      ...prev,
+      [category]: { ...prev[category], [property]: value }
+    }));
   };
 
   const handleSave = () => {
@@ -82,41 +66,28 @@ export default function VirtualTryOn({ wardrobe, saveOutfit }) {
       addToast('Give your outfit a name.', 'warning');
       return;
     }
-    
     saveOutfit({
       name: outfitName,
       items: selectedItems,
       avatarSettings,
-      processedImages,
       autoFitStyles
     });
-    
     setOutfitName('');
     addToast('Outfit saved successfully!', 'success');
   };
 
   return (
     <div className="vto-layout-v2">
-      {/* LEFT PANEL: Wardrobe */}
       <div className="vto-panel vto-left-panel glass-panel">
         <h3 className="panel-title">Wardrobe</h3>
-        <WardrobeSelector 
-          wardrobe={wardrobe} 
-          selectedItems={selectedItems} 
-          onSelectItem={handleSelectItem} 
-        />
+        <WardrobeSelector wardrobe={wardrobe} selectedItems={selectedItems} onSelectItem={handleSelectItem} />
       </div>
 
-      {/* CENTER PANEL: Avatar Display */}
       <div className="vto-center-panel">
         <div className="vto-stage-container glass-panel">
           {isProcessing && (
-            <div className="vto-loader-overlay">
-              <div className="vto-spinner"></div>
-              <p>Fitting Garment...</p>
-            </div>
+            <div className="vto-loader-overlay"><div className="vto-spinner"></div><p>Fitting...</p></div>
           )}
-          
           <AvatarPreview 
             selectedItems={selectedItems} 
             processedImages={processedImages}
@@ -124,30 +95,24 @@ export default function VirtualTryOn({ wardrobe, saveOutfit }) {
             avatarSettings={avatarSettings}
           />
         </div>
-
         <div className="vto-save-controls glass-panel">
-          <input 
-            type="text" 
-            placeholder="Name your outfit..." 
-            value={outfitName}
-            onChange={(e) => setOutfitName(e.target.value)}
-            className="vto-input"
-          />
-          <button className="vto-btn-primary" onClick={handleSave}>
-            <i className="fas fa-save"></i> Save Look
-          </button>
+          <input type="text" placeholder="Name look..." value={outfitName} onChange={(e) => setOutfitName(e.target.value)} className="vto-input" />
+          <button className="vto-btn-primary" onClick={handleSave}><i className="fas fa-save"></i> Save</button>
         </div>
       </div>
 
-      {/* RIGHT PANEL: Customization */}
       <div className="vto-panel vto-right-panel glass-panel">
-        <h3 className="panel-title">Avatar</h3>
+        <h3 className="panel-title">Customization</h3>
         <ControlPanel 
           settings={avatarSettings} 
+          tuning={autoFitStyles}
+          activeCategory={activeCategory}
           onChange={(s) => setAvatarSettings(prev => ({ ...prev, ...s }))}
+          onTune={handleTune}
           onReset={() => {
-             setSelectedItems({ top: null, bottom: null, shoes: null, outerwear: null });
-             setProcessedImages({ top: null, bottom: null, shoes: null, outerwear: null });
+             setSelectedItems({ top: null, bottom: null, shoes: null });
+             setProcessedImages({ top: null, bottom: null, shoes: null });
+             setAutoFitStyles({ top: {}, bottom: {}, shoes: {} });
           }}
         />
       </div>
