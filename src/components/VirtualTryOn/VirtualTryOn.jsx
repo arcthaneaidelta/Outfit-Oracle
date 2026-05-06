@@ -1,120 +1,148 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import WardrobeSelector from './WardrobeSelector';
-import AvatarPreview from './AvatarPreview';
-import ControlPanel from './ControlPanel';
 import { useToast } from '../shared/ToastContext';
 import { processClothingImage } from '../../utils/processImage';
-import { analyzeGarment } from '../../utils/autoFit';
+import { chatWithGemini, getAIImageUrl } from '../../utils/geminiApi';
 
 export default function VirtualTryOn({ wardrobe, saveOutfit }) {
   const { addToast } = useToast();
+  const chatEndRef = useRef(null);
   
+  // Selection State
   const [selectedItems, setSelectedItems] = useState({ top: null, bottom: null, shoes: null });
   const [processedImages, setProcessedImages] = useState({ top: null, bottom: null, shoes: null });
-  const [autoFitStyles, setAutoFitStyles] = useState({ top: {}, bottom: {}, shoes: {} });
-  
-  const [activeCategory, setActiveCategory] = useState(null);
-  const [avatarSettings, setAvatarSettings] = useState({ skinTone: '#fcdfb6', bodyType: 'regular' });
-
   const [isProcessing, setIsProcessing] = useState(false);
-  const [outfitName, setOutfitName] = useState('');
+
+  // Chat State
+  const [messages, setMessages] = useState([
+    { role: 'assistant', text: 'Hello! I am your Gemini AI Stylist. Select some clothes and tell me how you want to see them (e.g., \"Show this on a slim guy with light skin tone\").' }
+  ]);
+  const [userInput, setUserInput] = useState('');
+  const [isAILoading, setIsAILoading] = useState(false);
+  const [generatedImage, setGeneratedImage] = useState(null);
+
+  const scrollToBottom = () => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const handleSelectItem = async (category, item) => {
-    let categorySlot = category.toLowerCase();
-    if (categorySlot === 'pants' || categorySlot === 'bottoms') categorySlot = 'bottom';
-    if (categorySlot === 'shirts' || categorySlot === 'tops') categorySlot = 'top';
+    let slot = category.toLowerCase();
+    if (slot === 'pants' || slot === 'bottoms') slot = 'bottom';
+    if (slot === 'shirts' || slot === 'tops') slot = 'top';
 
-    if (selectedItems[categorySlot]?.id === item.id) {
-      setSelectedItems(prev => ({ ...prev, [categorySlot]: null }));
-      setProcessedImages(prev => ({ ...prev, [categorySlot]: null }));
-      setAutoFitStyles(prev => ({ ...prev, [categorySlot]: {} }));
-      setActiveCategory(null);
+    if (selectedItems[slot]?.id === item.id) {
+      setSelectedItems(prev => ({ ...prev, [slot]: null }));
+      setProcessedImages(prev => ({ ...prev, [slot]: null }));
       return;
     }
 
-    setSelectedItems(prev => ({ ...prev, [categorySlot]: item }));
-    setActiveCategory(categorySlot);
-
+    setSelectedItems(prev => ({ ...prev, [slot]: item }));
+    
     if (item.imageUrl) {
       setIsProcessing(true);
-      try {
-        const transparentUrl = await processClothingImage(item.imageUrl);
-        setProcessedImages(prev => ({ ...prev, [categorySlot]: transparentUrl }));
-        const styles = await analyzeGarment(transparentUrl, categorySlot);
-        setAutoFitStyles(prev => ({ ...prev, [categorySlot]: styles }));
-      } catch (err) {
-        addToast("Error processing item.", "error");
-      } finally {
-        setIsProcessing(false);
+      const transparentUrl = await processClothingImage(item.imageUrl);
+      setProcessedImages(prev => ({ ...prev, [slot]: transparentUrl }));
+      setIsProcessing(false);
+    }
+  };
+
+  const handleSendMessage = async (e) => {
+    e.preventDefault();
+    if (!userInput.trim() || isAILoading) return;
+
+    const currentInput = userInput;
+    setUserInput('');
+    setMessages(prev => [...prev, { role: 'user', text: currentInput }]);
+    setIsAILoading(true);
+
+    try {
+      const response = await chatWithGemini(currentInput, selectedItems, processedImages);
+      
+      setMessages(prev => [...prev, { role: 'assistant', text: response.aiResponse }]);
+      
+      if (response.imagePrompt) {
+        const imageUrl = getAIImageUrl(response.imagePrompt);
+        setGeneratedImage(imageUrl);
+        setMessages(prev => [...prev, { 
+          role: 'assistant', 
+          text: 'Generating your custom visual look...',
+          isImageLoader: true 
+        }]);
       }
+    } catch (err) {
+      addToast("AI Stylist is temporarily unavailable.", "error");
+    } finally {
+      setIsAILoading(false);
     }
-  };
-
-  const handleTune = (category, property, value) => {
-    setAutoFitStyles(prev => ({
-      ...prev,
-      [category]: { ...prev[category], [property]: value }
-    }));
-  };
-
-  const handleSave = () => {
-    if (!selectedItems.top && !selectedItems.bottom && !selectedItems.shoes) {
-      addToast('Select some items first!', 'warning');
-      return;
-    }
-    if (!outfitName.trim()) {
-      addToast('Give your outfit a name.', 'warning');
-      return;
-    }
-    saveOutfit({
-      name: outfitName,
-      items: selectedItems,
-      avatarSettings,
-      autoFitStyles
-    });
-    setOutfitName('');
-    addToast('Outfit saved successfully!', 'success');
   };
 
   return (
-    <div className="vto-layout-v2">
-      <div className="vto-panel vto-left-panel glass-panel">
-        <h3 className="panel-title">Wardrobe</h3>
+    <div className="vto-gemini-layout">
+      {/* LEFT: Wardrobe & Selection */}
+      <div className="vto-wardrobe-side glass-panel">
+        <h3 className="vto-title">Selected Look</h3>
+        <div className="selected-preview-row">
+          {Object.entries(processedImages).map(([cat, url]) => (
+            <div key={cat} className="mini-preview">
+              {url ? <img src={url} alt={cat} /> : <div className="empty-mini">{cat}</div>}
+            </div>
+          ))}
+        </div>
         <WardrobeSelector wardrobe={wardrobe} selectedItems={selectedItems} onSelectItem={handleSelectItem} />
       </div>
 
-      <div className="vto-center-panel">
-        <div className="vto-stage-container glass-panel">
-          {isProcessing && (
-            <div className="vto-loader-overlay"><div className="vto-spinner"></div><p>Fitting...</p></div>
+      {/* CENTER: AI Visualizer */}
+      <div className="vto-visualizer-side">
+        <div className="vto-result-stage glass-panel">
+          {generatedImage ? (
+            <div className="generated-image-container">
+              <img src={generatedImage} alt="AI Generated Look" className="fade-in" />
+              <button className="vto-save-btn" onClick={() => saveOutfit({ name: 'AI Look', image: generatedImage })}>
+                <i className="fas fa-heart"></i> Save to Favorites
+              </button>
+            </div>
+          ) : (
+            <div className="vto-placeholder">
+              <i className="fas fa-magic AI-glow"></i>
+              <p>Your AI-generated preview will appear here.</p>
+            </div>
           )}
-          <AvatarPreview 
-            selectedItems={selectedItems} 
-            processedImages={processedImages}
-            autoFitStyles={autoFitStyles}
-            avatarSettings={avatarSettings}
-          />
-        </div>
-        <div className="vto-save-controls glass-panel">
-          <input type="text" placeholder="Name look..." value={outfitName} onChange={(e) => setOutfitName(e.target.value)} className="vto-input" />
-          <button className="vto-btn-primary" onClick={handleSave}><i className="fas fa-save"></i> Save</button>
         </div>
       </div>
 
-      <div className="vto-panel vto-right-panel glass-panel">
-        <h3 className="panel-title">Customization</h3>
-        <ControlPanel 
-          settings={avatarSettings} 
-          tuning={autoFitStyles}
-          activeCategory={activeCategory}
-          onChange={(s) => setAvatarSettings(prev => ({ ...prev, ...s }))}
-          onTune={handleTune}
-          onReset={() => {
-             setSelectedItems({ top: null, bottom: null, shoes: null });
-             setProcessedImages({ top: null, bottom: null, shoes: null });
-             setAutoFitStyles({ top: {}, bottom: {}, shoes: {} });
-          }}
-        />
+      {/* RIGHT: Gemini Chat */}
+      <div className="vto-chat-side glass-panel">
+        <div className="chat-header">
+          <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002.svg" alt="Gemini" width="24" />
+          <span>Gemini AI Stylist</span>
+        </div>
+        
+        <div className="chat-messages">
+          {messages.map((msg, i) => (
+            <div key={i} className={`chat-bubble ${msg.role}`}>
+              {msg.text}
+              {msg.isImageLoader && <div className="dot-pulse"></div>}
+            </div>
+          ))}
+          <div ref={chatEndRef} />
+        </div>
+
+        <form className="chat-input-area" onSubmit={handleSendMessage}>
+          <input 
+            type="text" 
+            placeholder="Describe your look..." 
+            value={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
+            disabled={isAILoading}
+          />
+          <button type="submit" disabled={isAILoading}>
+            {isAILoading ? <i className="fas fa-spinner fa-spin"></i> : <i className="fas fa-paper-plane"></i>}
+          </button>
+        </form>
       </div>
     </div>
   );
