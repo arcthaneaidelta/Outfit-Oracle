@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@gradio/client": "^2.2.0",
     "@imgly/background-removal": "^1.7.0",
     "date-fns": "^3.0.6",
     "firebase": "^10.7.1",
