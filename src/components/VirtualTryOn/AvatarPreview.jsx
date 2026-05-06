@@ -5,72 +5,75 @@ export default function AvatarPreview({ selectedItems, processedImages, autoFitS
 
   // Body scale mapping
   const bodyScales = {
-    slim: 'scale(0.9, 1.0)',
-    regular: 'scale(1.0, 1.0)',
-    bulky: 'scale(1.15, 1.0)',
+    slim: 0.9,
+    regular: 1.0,
+    bulky: 1.15,
   };
 
+  const scale = bodyScales[bodyType] || 1.0;
+
   return (
-    <div className="vto-avatar-stage">
-      <div className="vto-layers-container" style={{ transform: bodyScales[bodyType], transition: 'transform 0.4s ease' }}>
+    <div className="vto-avatar-stage" style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <div className="vto-layers-container" style={{ position: 'relative', width: '300px', height: '600px', transform: `scale(${scale})`, transition: 'transform 0.4s ease' }}>
         
-        {/* LAYER 1: BASE TORSO (Behind everything) */}
-        <div className="vto-body-part torso-base" style={{ zIndex: 0 }}>
-          <svg viewBox="0 0 400 800">
-             <path d="M120 130 C 140 130, 260 130, 280 130 L 260 400 L 140 400 Z" fill={skinTone} />
+        {/* 1. TORSO BASE (Lowest) */}
+        <div className="vto-body-part" style={{ zIndex: 0 }}>
+          <svg viewBox="0 0 200 500" width="100%" height="100%">
+             <path d="M60 100 Q 100 90, 140 100 L 130 300 L 70 300 Z" fill={skinTone} />
           </svg>
         </div>
 
-        {/* LAYER 2: PANTS (Above torso) */}
+        {/* 2. PANTS (Behind feet/arms) */}
         {processedImages.bottom && (
-          <div className="vto-layer bottom-layer" style={{ zIndex: 1, ...autoFitStyles.bottom }}>
-            <img src={processedImages.bottom} alt="Pants" />
+          <div className="vto-layer" style={{ zIndex: 1, ...autoFitStyles.bottom }}>
+            <img src={processedImages.bottom} alt="Pants" style={{ width: '100%', height: 'auto' }} />
           </div>
         )}
 
-        {/* LAYER 3: SHIRT (Above pants/torso) */}
+        {/* 3. SHIRT (Behind neck/arms) */}
         {processedImages.top && (
-          <div className="vto-layer top-layer" style={{ zIndex: 2, ...autoFitStyles.top }}>
-            <img src={processedImages.top} alt="Shirt" />
+          <div className="vto-layer" style={{ zIndex: 2, ...autoFitStyles.top }}>
+            <img src={processedImages.top} alt="Shirt" style={{ width: '100%', height: 'auto' }} />
           </div>
         )}
 
-        {/* LAYER 4: FEET (Above pants to create "worn" look) */}
-        <div className="vto-body-part feet-front" style={{ zIndex: 3 }}>
-          <svg viewBox="0 0 400 800">
-            <rect x="140" y="720" width="55" height="30" rx="10" fill={skinTone} />
-            <rect x="205" y="720" width="55" height="30" rx="10" fill={skinTone} />
+        {/* 4. FEET & LEGS FRONT */}
+        <div className="vto-body-part" style={{ zIndex: 3 }}>
+          <svg viewBox="0 0 200 500" width="100%" height="100%">
+            {/* Legs */}
+            <rect x="70" y="300" width="25" height="180" rx="12" fill={skinTone} />
+            <rect x="105" y="300" width="25" height="180" rx="12" fill={skinTone} />
+            {/* Feet */}
+            <rect x="65" y="470" width="35" height="15" rx="5" fill={skinTone} />
+            <rect x="100" y="470" width="35" height="15" rx="5" fill={skinTone} />
           </svg>
         </div>
 
-        {/* LAYER 5: ARMS (Above shirt sleeves) */}
-        <div className="vto-body-part arms-front" style={{ zIndex: 4 }}>
-          <svg viewBox="0 0 400 800">
-            {/* Upper arms (partially covered) */}
-            <rect x="70" y="130" width="40" height="150" rx="20" fill={skinTone} opacity="0.3" />
-            <rect x="290" y="130" width="40" height="150" rx="20" fill={skinTone} opacity="0.3" />
-            {/* Lower arms and hands (fully visible) */}
-            <rect x="70" y="280" width="40" height="120" rx="20" fill={skinTone} />
-            <rect x="290" y="280" width="40" height="120" rx="20" fill={skinTone} />
+        {/* 5. ARMS FRONT */}
+        <div className="vto-body-part" style={{ zIndex: 4 }}>
+          <svg viewBox="0 0 200 500" width="100%" height="100%">
+            {/* Upper Arms */}
+            <rect x="35" y="100" width="25" height="120" rx="12" fill={skinTone} />
+            <rect x="140" y="100" width="25" height="120" rx="12" fill={skinTone} />
+            {/* Lower Arms & Hands */}
+            <rect x="35" y="210" width="25" height="100" rx="12" fill={skinTone} />
+            <rect x="140" y="210" width="25" height="100" rx="12" fill={skinTone} />
           </svg>
         </div>
 
-        {/* LAYER 6: NECK & HEAD (Above shirt collar) */}
-        <div className="vto-body-part neck-head-front" style={{ zIndex: 5 }}>
-          <svg viewBox="0 0 400 800">
-            {/* Neck */}
-            <rect x="185" y="100" width="30" height="40" fill={skinTone} />
-            {/* Head */}
-            <circle cx="200" cy="70" r="40" fill={skinTone} />
-            {/* Hair/Features placeholder */}
-            <circle cx="200" cy="65" r="42" fill="rgba(0,0,0,0.1)" stroke="rgba(255,255,255,0.1)" />
+        {/* 6. NECK & HEAD FRONT (Topmost body parts) */}
+        <div className="vto-body-part" style={{ zIndex: 5 }}>
+          <svg viewBox="0 0 200 500" width="100%" height="100%">
+            <rect x="90" y="80" width="20" height="30" fill={skinTone} />
+            <circle cx="100" cy="60" r="30" fill={skinTone} />
+            <circle cx="100" cy="58" r="32" fill="rgba(0,0,0,0.05)" />
           </svg>
         </div>
 
-        {/* SHOES (Actually we put them below feet layer if they are being "worn") */}
+        {/* 7. SHOES (Optional extra layer) */}
         {processedImages.shoes && (
-          <div className="vto-layer shoes-layer" style={{ zIndex: 6, ...autoFitStyles.shoes }}>
-            <img src={processedImages.shoes} alt="Shoes" />
+          <div className="vto-layer" style={{ zIndex: 6, ...autoFitStyles.shoes }}>
+            <img src={processedImages.shoes} alt="Shoes" style={{ width: '100%', height: 'auto' }} />
           </div>
         )}
 
