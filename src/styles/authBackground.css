@@ -1,0 +1,273 @@
+/* ════════════════════════════════════════════════
+   AUTH BACKGROUND — Luxury Fashion Editorial
+   Mirrors the loading screen: warm dark palette,
+   gold/terracotta particles, orbit rings, icon bubbles
+   ════════════════════════════════════════════════ */
+
+/* ── Wrapper ── */
+.ab-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* ── Warm ambient gradient (identical to loading ld-bg-gradient) ── */
+.ab-gradient {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 45%, rgba(196,98,45,0.14) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 20% 80%, rgba(212,175,55,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 50% at 80% 20%, rgba(181,137,58,0.06) 0%, transparent 50%),
+    linear-gradient(180deg, #0D0B08 0%, #151210 40%, #0D0B08 100%);
+  animation: ab-bgPulse 8s ease-in-out infinite alternate;
+}
+
+@keyframes ab-bgPulse {
+  0% { opacity: 1; }
+  100% { opacity: 0.82; }
+}
+
+/* ── Floating Particles ── */
+.ab-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ab-particle {
+  position: absolute;
+  border-radius: 50%;
+  animation: ab-particleFloat linear infinite;
+}
+
+.ab-particle--gold {
+  background: radial-gradient(circle, rgba(212,175,55,0.9) 0%, rgba(212,175,55,0.3) 100%);
+}
+
+.ab-particle--terra {
+  background: radial-gradient(circle, rgba(196,98,45,0.9) 0%, rgba(196,98,45,0.3) 100%);
+}
+
+@keyframes ab-particleFloat {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0;
+  }
+  10% { opacity: 1; }
+  50% {
+    transform: translateY(-35vh) translateX(15px) scale(1.5);
+  }
+  90% { opacity: 1; }
+  100% {
+    transform: translateY(-70vh) translateX(-10px) scale(0.5);
+    opacity: 0;
+  }
+}
+
+/* ── Decorative Orbit Rings (matches loading ld-orbits) ── */
+.ab-orbits {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.ab-orbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+}
+
+.ab-orbit--1 {
+  width: min(750px, 92vw);
+  height: min(750px, 92vw);
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(212,175,55,0.06);
+  animation: ab-orbitPulse 6s ease-in-out infinite;
+}
+
+.ab-orbit--2 {
+  width: min(530px, 72vw);
+  height: min(530px, 72vw);
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(196,98,45,0.08);
+  animation: ab-orbitPulse 6s ease-in-out 1s infinite;
+}
+
+.ab-orbit--3 {
+  width: min(320px, 52vw);
+  height: min(320px, 52vw);
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(212,175,55,0.10);
+  animation: ab-orbitPulse 6s ease-in-out 2s infinite;
+}
+
+@keyframes ab-orbitPulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+  50% { transform: translate(-50%, -50%) scale(1.08); opacity: 1; }
+}
+
+/* ── Floating Fashion Icon Ring (matches loading ld-icons-ring) ── */
+.ab-icons-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(650px, 88vw);
+  height: min(650px, 88vw);
+  transform: translate(-50%, -50%);
+  animation: ab-iconsRotate 60s linear infinite;
+  pointer-events: none;
+}
+
+.ab-icon-bubble {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 50%;
+  left: 50%;
+  transform:
+    translate(-50%, -50%)
+    rotate(calc(-1 * var(--angle)))
+    translateY(calc(min(325px, 44vw) * -1))
+    rotate(var(--angle));
+  animation:
+    ab-iconAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) var(--delay) both,
+    ab-iconFloat 6s ease-in-out calc(var(--delay) + 0.8s) infinite;
+}
+
+.ab-icon-bubble svg {
+  width: 20px;
+  height: 20px;
+  color: rgba(212,175,55,0.6);
+  stroke-width: 1.2;
+}
+
+@keyframes ab-iconsRotate {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes ab-iconAppear {
+  from {
+    opacity: 0;
+    transform:
+      translate(-50%, -50%)
+      rotate(calc(-1 * var(--angle)))
+      translateY(0)
+      rotate(var(--angle))
+      scale(0);
+  }
+  to {
+    opacity: 1;
+    transform:
+      translate(-50%, -50%)
+      rotate(calc(-1 * var(--angle)))
+      translateY(calc(min(325px, 44vw) * -1))
+      rotate(var(--angle))
+      scale(1);
+  }
+}
+
+@keyframes ab-iconFloat {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.5); }
+}
+
+/* ── Glow Orbs ── */
+.ab-glow {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.ab-glow--terra {
+  width: 550px;
+  height: 550px;
+  top: -12%;
+  right: -8%;
+  background: radial-gradient(circle, rgba(196,98,45,0.20) 0%, rgba(196,98,45,0.04) 40%, transparent 70%);
+  filter: blur(60px);
+  animation: ab-glowTerra 14s ease-in-out infinite;
+}
+
+@keyframes ab-glowTerra {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+  33% { transform: translate(-50px, 70px) scale(1.15); opacity: 1; }
+  66% { transform: translate(-25px, 35px) scale(0.9); opacity: 0.6; }
+}
+
+.ab-glow--gold {
+  width: 450px;
+  height: 450px;
+  bottom: -8%;
+  left: -6%;
+  background: radial-gradient(circle, rgba(212,175,55,0.15) 0%, rgba(181,137,58,0.04) 40%, transparent 70%);
+  filter: blur(60px);
+  animation: ab-glowGold 18s ease-in-out infinite;
+}
+
+@keyframes ab-glowGold {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+  50% { transform: translate(50px, -40px) scale(1.2); opacity: 1; }
+}
+
+.ab-glow--center {
+  width: 350px;
+  height: 350px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -55%);
+  background: radial-gradient(circle, rgba(196,98,45,0.12) 0%, transparent 70%);
+  filter: blur(50px);
+  animation: ab-glowCenter 5s ease-in-out infinite;
+}
+
+@keyframes ab-glowCenter {
+  0%, 100% { transform: translate(-50%, -55%) scale(1); opacity: 0.5; }
+  50% { transform: translate(-50%, -55%) scale(1.15); opacity: 0.9; }
+}
+
+/* ── Bottom Decorative Line (matches loading ld-bottom-line) ── */
+.ab-bottom-line {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212,175,55,0.30), transparent);
+  animation: ab-linePulse 3s ease-in-out infinite;
+}
+
+@keyframes ab-linePulse {
+  0%, 100% { opacity: 0.3; width: 120px; }
+  50% { opacity: 0.8; width: 200px; }
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .ab-icon-bubble {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+  }
+  .ab-icon-bubble svg {
+    width: 16px;
+    height: 16px;
+  }
+}

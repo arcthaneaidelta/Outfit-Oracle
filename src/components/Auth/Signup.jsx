@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useAuth } from './AuthContext';
 import { useToast } from '../shared/ToastContext';
+import AuthBackground from './AuthBackground';
+import '../../styles/authBackground.css';
 
 const STYLE_PREFS = ['Casual', 'Formal', 'Streetwear', 'Minimalist', 'Bohemian', 'Classic', 'Sporty', 'Eclectic'];
 
@@ -55,6 +57,8 @@ export default function Signup({ onSwitch }) {
 
   return (
     <div className="auth-page">
+      <AuthBackground />
+
       <div className="auth-container">
         <header className="auth-header-top">
           <div className="top-icon">✦</div>

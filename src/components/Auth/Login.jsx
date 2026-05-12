@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useAuth } from './AuthContext';
 import { useToast } from '../shared/ToastContext';
+import AuthBackground from './AuthBackground';
+import '../../styles/authBackground.css';
 
 export default function Login({ onSwitch }) {
   const { login } = useAuth();
@@ -26,6 +28,8 @@ export default function Login({ onSwitch }) {
 
   return (
     <div className="auth-page">
+      <AuthBackground />
+
       <div className="auth-container">
         <header className="auth-header-top">
           <div className="top-icon">✦</div>
