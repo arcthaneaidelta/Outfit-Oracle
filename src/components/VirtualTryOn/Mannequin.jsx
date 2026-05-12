@@ -10,8 +10,8 @@ export default function Mannequin({
   bodyType = 'athletic'
 }) {
   // Mapping generated images
-  const maleImg = "/realistic_male_mannequin_athletic_1778566247174.png";
-  const femaleImg = "/realistic_female_mannequin_athletic_1778566323053.png";
+  const maleImg = "/male-mannequin.png";
+  const femaleImg = "/female-mannequin.png";
 
   const currentImg = gender === 'male' ? maleImg : femaleImg;
 
