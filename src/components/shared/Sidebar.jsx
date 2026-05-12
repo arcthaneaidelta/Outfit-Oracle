@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { id: 'planner', label: 'Planner', icon: '📅' },
   { id: 'history', label: 'Wear History', icon: '📊' },
   { id: 'favorites', label: 'Favorites', icon: '❤️' },
+  { id: 'virtual-try-on', label: 'Virtual Try-On', icon: '🧍' },
 ];
 
 export default function Sidebar({ activeTab, onNavigate }) {

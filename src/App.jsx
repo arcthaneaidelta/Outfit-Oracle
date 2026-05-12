@@ -35,6 +35,7 @@ import Planner from './components/Planner/Planner';
 import WearHistory from './components/Wardrobe/WearHistory';
 import Favorites from './components/Favorites/Favorites';
 import ProfileSettings from './components/Dashboard/ProfileSettings';
+import VirtualTryOn from './components/VirtualTryOn/VirtualTryOn';
 import { useWardrobe, useOutfits, usePlanner, useWearHistory } from './hooks/useFirestore';
 
 function AppShell({ theme, toggleTheme }) {
@@ -82,6 +83,8 @@ function AppShell({ theme, toggleTheme }) {
         return <WearHistory history={history} />;
       case 'favorites':
         return <Favorites outfits={outfits} wardrobe={items} toggleFavorite={toggleFavorite} planOutfit={planOutfit} />;
+      case 'virtual-try-on':
+        return <VirtualTryOn wardrobe={items} />;
       case 'profile':
         return <ProfileSettings />;
       default:
