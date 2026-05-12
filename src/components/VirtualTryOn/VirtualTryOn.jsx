@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Mannequin from './Mannequin';
 import { useToast } from '../shared/ToastContext';
 import { getCategoryEmoji } from '../../utils/recommendations';
+import { removeBackground } from '../../utils/processImage';
 import './VirtualTryOn.css';
 
 const SKIN_TONES = [
@@ -36,26 +37,37 @@ export default function VirtualTryOn({ wardrobe = [] }) {
     shoes: null,
     outerwear: null
   });
+  const [processedImages, setProcessedImages] = useState({});
   const [activeSlot, setActiveSlot] = useState('top');
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Filter wardrobe items for the active slot
   const currentSlotConfig = SLOT_CONFIG.find(s => s.key === activeSlot);
   const availableItems = wardrobe.filter(item => 
     currentSlotConfig.categories.includes(item.category)
   );
 
-  const handleSelectItem = (item) => {
+  const handleSelectItem = async (item) => {
     setIsProcessing(true);
-    // Simulate "Extraction" logic
-    setTimeout(() => {
+    try {
+      // Step 1: Real-time background removal
+      const transparentImg = await removeBackground(item.imageUrl);
+      
+      setProcessedImages(prev => ({
+        ...prev,
+        [item.id]: transparentImg
+      }));
+
       setSelectedItems(prev => ({
         ...prev,
         [activeSlot]: item
       }));
+      
+      addToast(`Perfect fit for ${item.name}!`, 'success');
+    } catch (e) {
+      addToast('Failed to process clothing fit', 'error');
+    } finally {
       setIsProcessing(false);
-      addToast(`Successfully fitted ${item.name}`, 'success');
-    }, 800);
+    }
   };
 
   const removeItem = (slot) => {
@@ -65,15 +77,14 @@ export default function VirtualTryOn({ wardrobe = [] }) {
   return (
     <div className="vto-premium-container">
       <div className="page-header">
-        <h2>Virtual Try-On <span>Elite</span></h2>
-        <p>Physically-accurate clothing simulation on your personalized avatar</p>
+        <h2>Virtual Try-On <span>Pro</span></h2>
+        <p>Advanced anatomical fitting with high-fidelity realistic mannequins</p>
       </div>
 
       <div className="vto-grid">
-        {/* Left: Customization Controls */}
         <div className="vto-controls">
           <section className="control-section">
-            <h4>1. Personalize Avatar</h4>
+            <h4>Avatar Personalization</h4>
             <div className="gender-selector">
               <button 
                 className={gender === 'male' ? 'active' : ''} 
@@ -93,7 +104,6 @@ export default function VirtualTryOn({ wardrobe = [] }) {
                   className={`tone-btn ${skinTone === tone.color ? 'active' : ''}`}
                   style={{ backgroundColor: tone.color }}
                   onClick={() => setSkinTone(tone.color)}
-                  title={tone.name}
                 />
               ))}
             </div>
@@ -106,7 +116,6 @@ export default function VirtualTryOn({ wardrobe = [] }) {
                   className={`type-btn ${bodyType === type.id ? 'active' : ''}`}
                   onClick={() => setBodyType(type.id)}
                 >
-                  <span className="type-icon">{type.icon}</span>
                   <span className="type-label">{type.label}</span>
                 </button>
               ))}
@@ -114,7 +123,6 @@ export default function VirtualTryOn({ wardrobe = [] }) {
           </section>
 
           <section className="control-section wardrobe-section">
-            <h4>2. Select Clothing</h4>
             <div className="slot-tabs">
               {SLOT_CONFIG.map(slot => (
                 <button 
@@ -123,60 +131,44 @@ export default function VirtualTryOn({ wardrobe = [] }) {
                   onClick={() => setActiveSlot(slot.key)}
                 >
                   {slot.label}
-                  {selectedItems[slot.key] && <span className="slot-check">✓</span>}
                 </button>
               ))}
             </div>
 
             <div className="items-picker">
-              {availableItems.length === 0 ? (
-                <div className="empty-picker">
-                  <p>No items found for this category</p>
-                </div>
-              ) : (
-                <div className="picker-grid">
-                  {availableItems.map(item => (
-                    <div 
-                      key={item.id} 
-                      className={`picker-card ${selectedItems[activeSlot]?.id === item.id ? 'selected' : ''}`}
-                      onClick={() => handleSelectItem(item)}
-                    >
-                      <div className="item-img-wrap">
-                        {item.imageUrl ? (
-                          <img src={item.imageUrl} alt={item.name} />
-                        ) : (
-                          <span className="item-emoji">{getCategoryEmoji(item.category)}</span>
-                        )}
-                      </div>
-                      <div className="item-info">
-                        <span className="item-name">{item.name}</span>
-                      </div>
+              <div className="picker-grid">
+                {availableItems.map(item => (
+                  <div 
+                    key={item.id} 
+                    className={`picker-card ${selectedItems[activeSlot]?.id === item.id ? 'selected' : ''}`}
+                    onClick={() => handleSelectItem(item)}
+                  >
+                    <div className="item-img-wrap">
+                      <img src={item.imageUrl} alt={item.name} />
                     </div>
-                  ))}
-                </div>
-              )}
+                  </div>
+                ))}
+              </div>
             </div>
           </section>
         </div>
 
-        {/* Center: The Live Preview */}
         <div className="vto-preview">
           <div className="preview-stage">
             {isProcessing && (
               <div className="vto-loader">
                 <div className="scanner-line"></div>
-                <span>Analyzing Fit...</span>
+                <span>Draping Fabric...</span>
               </div>
             )}
             
-            <div className={`mannequin-wrapper ${gender}`}>
+            <div className={`mannequin-wrapper realistic ${gender} ${bodyType}`}>
               <Mannequin 
                 gender={gender} 
                 skinTone={skinTone} 
                 bodyType={bodyType} 
               />
               
-              {/* Layered Clothing */}
               <div className="clothing-layers">
                 {Object.entries(selectedItems)
                   .filter(([_, item]) => item !== null)
@@ -188,34 +180,23 @@ export default function VirtualTryOn({ wardrobe = [] }) {
                   .map(([slot, item]) => (
                     <div 
                       key={slot} 
-                      className={`clothing-layer layer-${slot} ${bodyType}`}
+                      className={`clothing-layer layer-${slot} ${bodyType} fitted`}
                     >
                       <img 
-                        src={item.imageUrl} 
+                        src={processedImages[item.id] || item.imageUrl} 
                         alt={item.name} 
+                        className="worn-item"
                       />
                     </div>
                   ))}
               </div>
             </div>
 
-            <div className="stage-floor"></div>
-
-            {/* Action Overlay */}
-            <div className="vto-actions">
-               <button className="btn btn-primary" onClick={() => addToast('Outfit composition saved to favorites!', 'success')}>
-                 ✨ Save this Look
-               </button>
-            </div>
+            <div className="stage-floor pro"></div>
           </div>
 
-          <div className="selected-summary">
-            {Object.entries(selectedItems).map(([slot, item]) => item && (
-              <div key={slot} className="summary-pill">
-                <span>{item.name}</span>
-                <button onClick={() => removeItem(slot)}>×</button>
-              </div>
-            ))}
+          <div className="vto-actions">
+             <button className="btn btn-primary premium">✨ Save High-End Look</button>
           </div>
         </div>
       </div>

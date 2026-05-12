@@ -1,74 +1,46 @@
 import React from 'react';
 
 /**
- * Mannequin Component
- * A customizable SVG-based mannequin for virtual try-on.
- * Supports skin tone, body type (slim, athletic, curvy), and gender.
+ * Realistic Mannequin Component
+ * Uses high-quality 3D rendered mannequin assets with dynamic tinting.
  */
 export default function Mannequin({ 
   gender = 'female', 
   skinTone = '#E5C298', 
-  bodyType = 'athletic',
-  scale = 1
+  bodyType = 'athletic'
 }) {
-  // Body type path adjustments (simplified logic)
-  const getBodyPath = () => {
-    if (gender === 'female') {
-      if (bodyType === 'slim') return "M12 4c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-2 5c-1.1 0-2 .9-2 2v6h1v6h2v-6h2v6h2v-6h1v-6c0-1.1-.9-2-2-2h-2z";
-      if (bodyType === 'curvy') return "M12 4c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-3 5c-1.1 0-2 .9-2 2v6h1c0 2 1 4 2 6h4c1-2 2-4 2-6h1v-6c0-1.1-.9-2-2-2H9z";
-      return "M12 4c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-2.5 5c-1.1 0-2 .9-2 2v6h1.5v6h2v-6h2v6h2v-6h1.5v-6c0-1.1-.9-2-2-2h-3z";
-    } else {
-      // Male paths
-      if (bodyType === 'slim') return "M12 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-2 5c-1.1 0-2 .9-2 2v7h1v6h2v-6h2v6h2v-6h1V9c0-1.1-.9-2-2-2h-2z";
-      return "M12 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-3 5c-1.1 0-2 .9-2 2v7h2v6h2v-6h2v6h2v-6h2V9c0-1.1-.9-2-2-2H9z";
-    }
+  // Mapping generated images
+  const maleImg = "/realistic_male_mannequin_athletic_1778566247174.png";
+  const femaleImg = "/realistic_female_mannequin_athletic_1778566323053.png";
+
+  const currentImg = gender === 'male' ? maleImg : femaleImg;
+
+  // Calculate HSL shift for skin tone
+  // We'll use CSS filters to tint the neutral light beige mannequin
+  const getFilter = () => {
+    // This is a simplified mapping. In a real app, we'd use a more complex color matrix.
+    if (skinTone === '#F9E4D4') return 'sepia(0.2) brightness(1.1)'; // Fair
+    if (skinTone === '#E5C298') return 'sepia(0.3) brightness(1.0)'; // Light
+    if (skinTone === '#D2A172') return 'sepia(0.5) brightness(0.9)'; // Medium
+    if (skinTone === '#A57244') return 'sepia(0.7) brightness(0.7) saturate(1.2)'; // Tan
+    if (skinTone === '#63392D') return 'sepia(0.8) brightness(0.4) saturate(1.5)'; // Deep
+    return 'none';
   };
 
   return (
-    <div className="mannequin-container" style={{ transform: `scale(${scale})`, transition: 'all 0.4s ease' }}>
-      <svg 
-        viewBox="0 0 24 24" 
-        width="100%" 
-        height="100%" 
-        style={{ filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.1))' }}
-      >
-        <defs>
-          <linearGradient id="skinGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" style={{ stopColor: skinTone, stopOpacity: 1 }} />
-            <stop offset="100%" style={{ stopColor: adjustColor(skinTone, -20), stopOpacity: 1 }} />
-          </linearGradient>
-        </defs>
-        <path 
-          d={getBodyPath()} 
-          fill="url(#skinGrad)" 
-          stroke={adjustColor(skinTone, -40)}
-          strokeWidth="0.2"
-        />
-        {/* Anatomical shading to make it look "human-like" and not just a flat shape */}
-        <path 
-          d={getBodyPath()} 
-          fill="black" 
-          fillOpacity="0.05"
-          transform="translate(0.2, 0.2)"
-        />
-      </svg>
+    <div className={`realistic-mannequin ${bodyType}`}>
+      <img 
+        src={currentImg} 
+        alt="Mannequin" 
+        style={{ 
+          filter: getFilter(),
+          width: '100%',
+          height: '100%',
+          objectFit: 'contain'
+        }} 
+      />
+      {/* Anatomical Overlay for better lighting consistency */}
+      <div className="mannequin-shading"></div>
     </div>
   );
-}
-
-// Helper to darken colors for gradients/strokes
-function adjustColor(hex, amt) {
-  let usePound = false;
-  if (hex[0] === "#") {
-    hex = hex.slice(1);
-    usePound = true;
-  }
-  let num = parseInt(hex, 16);
-  let r = (num >> 16) + amt;
-  if (r > 255) r = 255; else if (r < 0) r = 0;
-  let b = ((num >> 8) & 0x00FF) + amt;
-  if (b > 255) b = 255; else if (b < 0) b = 0;
-  let g = (num & 0x0000FF) + amt;
-  if (g > 255) g = 255; else if (g < 0) g = 0;
-  return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16).padStart(6, '0');
 }
