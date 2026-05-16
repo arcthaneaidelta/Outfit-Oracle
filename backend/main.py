@@ -13,8 +13,18 @@ from logic import get_recommendations, get_category_emoji
 
 load_dotenv()
 
+import json
+
 # Initialize Firebase Admin
-cred = credentials.Certificate("serviceAccountKey.json")
+service_account_json = os.getenv("FIREBASE_SERVICE_ACCOUNT_JSON")
+if service_account_json:
+    # Use environment variable for production (Render/Railway)
+    cred_dict = json.loads(service_account_json)
+    cred = credentials.Certificate(cred_dict)
+else:
+    # Use local file for development
+    cred = credentials.Certificate("serviceAccountKey.json")
+
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
