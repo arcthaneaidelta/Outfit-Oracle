@@ -16,25 +16,41 @@ load_dotenv()
 import json
 
 # Initialize Firebase Admin
+db = None
 try:
     service_account_json = os.getenv("FIREBASE_SERVICE_ACCOUNT_JSON")
     if service_account_json:
-        # Use environment variable for production
-        cred_dict = json.loads(service_account_json)
-        cred = credentials.Certificate(cred_dict)
+        # Robust JSON loading
+        try:
+            cred_dict = json.loads(service_account_json)
+            cred = credentials.Certificate(cred_dict)
+            firebase_admin.initialize_app(cred)
+            db = firestore.client()
+            print("Firebase initialized from Env Var")
+        except Exception as json_err:
+            print(f"JSON Parse Error: {str(json_err)}")
     else:
-        # Use local file for development
-        cred = credentials.Certificate("serviceAccountKey.json")
-
-    firebase_admin.initialize_app(cred)
-    db = firestore.client()
+        # Local dev
+        key_path = os.path.join(os.path.dirname(__file__), "serviceAccountKey.json")
+        if os.path.exists(key_path):
+            cred = credentials.Certificate(key_path)
+            firebase_admin.initialize_app(cred)
+            db = firestore.client()
+            print("Firebase initialized from Local File")
 except Exception as e:
     print(f"FIREBASE INIT ERROR: {str(e)}")
-    db = None # Will cause error later but allow app to start
 
 # Initialize Gemini
-genai.configure(api_key=os.getenv("VITE_GEMINI_API_KEY"))
-model = genai.GenerativeModel('gemini-pro')
+try:
+    gemini_key = os.getenv("VITE_GEMINI_API_KEY")
+    if gemini_key:
+        genai.configure(api_key=gemini_key)
+        model = genai.GenerativeModel('gemini-pro')
+    else:
+        model = None
+except Exception as e:
+    print(f"GEMINI INIT ERROR: {str(e)}")
+    model = None
 
 app = FastAPI()
 
@@ -110,6 +126,7 @@ async def ai_advice(prompt: str = Body(..., embed=True)):
 # CRUD Proxies (Optional but good for a "Full Python Backend" claim)
 @app.get("/api/wardrobe/{uid}")
 async def get_wardrobe(uid: str):
+    if not db: raise HTTPException(status_code=500, detail="Database not initialized")
     docs = db.collection('clothing_items').where('uid', '==', uid).stream()
     items = [ {**doc.to_dict(), "id": doc.id} for doc in docs ]
     # Sort by createdAt descending
