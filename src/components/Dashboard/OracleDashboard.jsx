@@ -1,14 +1,25 @@
-// Animated Theme Toggle version
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useAuth } from '../Auth/AuthContext';
 import { useWeather } from '../../hooks/useWeather';
-import { getRecommendations, getCategoryEmoji } from '../../utils/recommendations';
+import { getCategoryEmoji } from '../../utils/recommendations';
 import { useToast } from '../shared/ToastContext';
+import { apiClient } from '../../utils/apiClient';
 
 export default function Dashboard({ wardrobe, outfits, history, planner, onNavigate, theme, toggleTheme }) {
-  const { userProfile } = useAuth();
+  const { user, userProfile } = useAuth();
   const { addToast } = useToast();
   const { weather } = useWeather(userProfile?.city);
+  const [recommendations, setRecommendations] = useState([]);
+
+  useEffect(() => {
+    if (user?.uid && outfits.length > 0) {
+      apiClient.post('/recommendations', {
+        uid: user.uid,
+        weather: weather ? { temp: weather.temp, condition: weather.condition } : null,
+        occasion: 'Any'
+      }).then(setRecommendations).catch(console.error);
+    }
+  }, [user?.uid, outfits, weather]);
 
   const today = new Date().toISOString().split('T')[0];
   const todayPlan = planner.find(e => e.date === today);

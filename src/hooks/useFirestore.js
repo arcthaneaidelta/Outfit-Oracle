@@ -43,54 +43,54 @@ const sortDesc = (arr, field) =>
     return bVal - aVal;
   });
 
+import { apiClient } from '../utils/apiClient';
+
 // ---- WARDROBE ----
 
 export function useWardrobe(uid) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!uid) { setLoading(false); return; }
-    // No orderBy — avoids needing Firestore composite indexes. Sorted client-side below.
-    const q = query(collection(db, 'clothing_items'), where('uid', '==', uid));
-    const unsub = onSnapshot(
-      q,
-      (snap) => {
-        const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        setItems(sortDesc(docs, 'createdAt'));
-        setLoading(false);
-      },
-      (error) => {
-        console.error('Wardrobe fetch error:', error.message);
-        setItems([]);
-        setLoading(false);
-      }
-    );
-    return unsub;
+  const fetchItems = useCallback(async () => {
+    if (!uid) return;
+    try {
+      const data = await apiClient.get(`/wardrobe/${uid}`);
+      setItems(data);
+    } catch (err) {
+      console.error('Wardrobe fetch error:', err.message);
+    } finally {
+      setLoading(false);
+    }
   }, [uid]);
+
+  useEffect(() => {
+    fetchItems();
+    // In a real production app, we'd use WebSockets for real-time.
+    // For this transition, we'll refetch on operations.
+  }, [fetchItems]);
 
   const addItem = useCallback(async (data, imageFile) => {
     let imageUrl = null;
     if (imageFile) {
       imageUrl = await uploadToCloudinary(imageFile);
     }
-    return addDoc(collection(db, 'clothing_items'), {
-      uid,
+    const res = await apiClient.post(`/wardrobe/${uid}`, {
       ...data,
       imageUrl,
-      wearCount: 0,
-      createdAt: serverTimestamp(),
     });
-  }, [uid]);
+    fetchItems(); // Refresh list
+    return res;
+  }, [uid, fetchItems]);
 
-  const updateItem = useCallback((id, data) =>
-    updateDoc(doc(db, 'clothing_items', id), data), []);
+  const updateItem = useCallback(async (id, data) => {
+    await apiClient.patch(`/wardrobe/${id}`, data);
+    fetchItems();
+  }, [fetchItems]);
 
   const deleteItem = useCallback(async (item) => {
-    // Note: Cloudinary images are not deleted here (requires server-side API call with secret).
-    // They will remain in your Cloudinary media library but won't appear in the app.
-    await deleteDoc(doc(db, 'clothing_items', item.id));
-  }, []);
+    await apiClient.delete(`/wardrobe/${item.id}`);
+    fetchItems();
+  }, [fetchItems]);
 
   return { items, loading, addItem, updateItem, deleteItem };
 }
@@ -101,44 +101,42 @@ export function useOutfits(uid) {
   const [outfits, setOutfits] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!uid) { setLoading(false); return; }
-    const q = query(collection(db, 'outfits'), where('uid', '==', uid));
-    const unsub = onSnapshot(
-      q,
-      (snap) => {
-        const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        setOutfits(sortDesc(docs, 'createdAt'));
-        setLoading(false);
-      },
-      (error) => {
-        console.error('Outfits fetch error:', error.message);
-        setOutfits([]);
-        setLoading(false);
-      }
-    );
-    return unsub;
+  const fetchOutfits = useCallback(async () => {
+    if (!uid) return;
+    try {
+      const data = await apiClient.get(`/outfits/${uid}`);
+      setOutfits(data);
+    } catch (err) {
+      console.error('Outfits fetch error:', err.message);
+    } finally {
+      setLoading(false);
+    }
   }, [uid]);
+
+  useEffect(() => {
+    fetchOutfits();
+  }, [fetchOutfits]);
 
   const saveOutfit = useCallback(async (data) => {
-    return addDoc(collection(db, 'outfits'), {
-      uid,
-      ...data,
-      isFavorite: false,
-      wearCount: 0,
-      createdAt: serverTimestamp(),
-    });
-  }, [uid]);
+    const res = await apiClient.post(`/outfits/${uid}`, data);
+    fetchOutfits();
+    return res;
+  }, [uid, fetchOutfits]);
 
-  const updateOutfit = useCallback((id, data) =>
-    updateDoc(doc(db, 'outfits', id), data), []);
+  const updateOutfit = useCallback(async (id, data) => {
+    await apiClient.patch(`/outfits/${id}`, data);
+    fetchOutfits();
+  }, [fetchOutfits]);
 
   const deleteOutfit = useCallback(async (id) => {
-    await deleteDoc(doc(db, 'outfits', id));
-  }, []);
+    await apiClient.delete(`/outfits/${id}`);
+    fetchOutfits();
+  }, [fetchOutfits]);
 
-  const toggleFavorite = useCallback((id, current) =>
-    updateDoc(doc(db, 'outfits', id), { isFavorite: !current }), []);
+  const toggleFavorite = useCallback(async (id, current) => {
+    await apiClient.patch(`/outfits/${id}`, { isFavorite: !current });
+    fetchOutfits();
+  }, [fetchOutfits]);
 
   return { outfits, loading, saveOutfit, updateOutfit, deleteOutfit, toggleFavorite };
 }
@@ -149,38 +147,32 @@ export function usePlanner(uid) {
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!uid) { setLoading(false); return; }
-    const q = query(collection(db, 'planner'), where('uid', '==', uid));
-    const unsub = onSnapshot(
-      q,
-      (snap) => {
-        const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        // Sort by date descending (date is a string like "2026-02-21", lexicographic sort works)
-        setEntries(docs.sort((a, b) => (b.date || '').localeCompare(a.date || '')));
-        setLoading(false);
-      },
-      (error) => {
-        console.error('Planner fetch error:', error.message);
-        setEntries([]);
-        setLoading(false);
-      }
-    );
-    return unsub;
+  const fetchPlanner = useCallback(async () => {
+    if (!uid) return;
+    try {
+      const data = await apiClient.get(`/planner/${uid}`);
+      setEntries(data);
+    } catch (err) {
+      console.error('Planner fetch error:', err.message);
+    } finally {
+      setLoading(false);
+    }
   }, [uid]);
 
-  const planOutfit = useCallback(async (date, outfitId, outfitName) => {
-    const existing = entries.find(e => e.date === date);
-    if (existing) {
-      return updateDoc(doc(db, 'planner', existing.id), { outfitId, outfitName, updatedAt: serverTimestamp() });
-    }
-    return addDoc(collection(db, 'planner'), {
-      uid, date, outfitId, outfitName, createdAt: serverTimestamp(),
-    });
-  }, [uid, entries]);
+  useEffect(() => {
+    fetchPlanner();
+  }, [fetchPlanner]);
 
-  const removePlan = useCallback((id) =>
-    deleteDoc(doc(db, 'planner', id)), []);
+  const planOutfit = useCallback(async (date, outfitId, outfitName) => {
+    const res = await apiClient.post(`/planner/${uid}`, { date, outfitId, outfitName });
+    fetchPlanner();
+    return res;
+  }, [uid, fetchPlanner]);
+
+  const removePlan = useCallback(async (id) => {
+    await apiClient.delete(`/planner/${id}`); // Need endpoint for this?
+    fetchPlanner();
+  }, [fetchPlanner]);
 
   return { entries, loading, planOutfit, removePlan };
 }
@@ -191,34 +183,26 @@ export function useWearHistory(uid) {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!uid) { setLoading(false); return; }
-    const q = query(collection(db, 'wear_history'), where('uid', '==', uid));
-    const unsub = onSnapshot(
-      q,
-      (snap) => {
-        const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        setHistory(sortDesc(docs, 'wornAt'));
-        setLoading(false);
-      },
-      (error) => {
-        console.error('History fetch error:', error.message);
-        setHistory([]);
-        setLoading(false);
-      }
-    );
-    return unsub;
+  const fetchHistory = useCallback(async () => {
+    if (!uid) return;
+    try {
+      const data = await apiClient.get(`/history/${uid}`);
+      setHistory(data);
+    } catch (err) {
+      console.error('History fetch error:', err.message);
+    } finally {
+      setLoading(false);
+    }
   }, [uid]);
 
+  useEffect(() => {
+    fetchHistory();
+  }, [fetchHistory]);
+
   const logWear = useCallback(async (outfitId, outfitName, itemIds = []) => {
-    await addDoc(collection(db, 'wear_history'), {
-      uid, outfitId, outfitName, itemIds,
-      wornAt: serverTimestamp(),
-    });
-    await updateDoc(doc(db, 'outfits', outfitId), {
-      wearCount: (history.filter(h => h.outfitId === outfitId).length + 1),
-    });
-  }, [uid, history]);
+    await apiClient.post(`/history/${uid}`, { outfitId, outfitName, itemIds });
+    fetchHistory();
+  }, [uid, fetchHistory]);
 
   return { history, loading, logWear };
 }
