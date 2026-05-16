@@ -1,5 +1,10 @@
 import os
+import sys
 from typing import List, Optional
+
+# Add current directory to path for Vercel imports
+sys.path.append(os.path.dirname(__file__))
+
 from fastapi import FastAPI, HTTPException, Body
 from fastapi.middleware.cors import CORSMiddleware
 import firebase_admin
