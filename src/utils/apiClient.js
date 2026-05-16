@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:8000/api';
+const BASE_URL = 'https://outfit-oracle.vercel.app/api';
 
 export const apiClient = {
   async get(endpoint) {
