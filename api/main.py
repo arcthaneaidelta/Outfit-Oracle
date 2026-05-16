@@ -16,17 +16,21 @@ load_dotenv()
 import json
 
 # Initialize Firebase Admin
-service_account_json = os.getenv("FIREBASE_SERVICE_ACCOUNT_JSON")
-if service_account_json:
-    # Use environment variable for production (Render/Railway)
-    cred_dict = json.loads(service_account_json)
-    cred = credentials.Certificate(cred_dict)
-else:
-    # Use local file for development
-    cred = credentials.Certificate("serviceAccountKey.json")
+try:
+    service_account_json = os.getenv("FIREBASE_SERVICE_ACCOUNT_JSON")
+    if service_account_json:
+        # Use environment variable for production
+        cred_dict = json.loads(service_account_json)
+        cred = credentials.Certificate(cred_dict)
+    else:
+        # Use local file for development
+        cred = credentials.Certificate("serviceAccountKey.json")
 
-firebase_admin.initialize_app(cred)
-db = firestore.client()
+    firebase_admin.initialize_app(cred)
+    db = firestore.client()
+except Exception as e:
+    print(f"FIREBASE INIT ERROR: {str(e)}")
+    db = None # Will cause error later but allow app to start
 
 # Initialize Gemini
 genai.configure(api_key=os.getenv("VITE_GEMINI_API_KEY"))
@@ -42,6 +46,18 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+from fastapi.responses import PlainTextResponse
+import traceback
+
+@app.middleware("http")
+async def catch_exceptions_middleware(request, call_next):
+    try:
+        return await call_next(request)
+    except Exception as e:
+        err_msg = f"Error: {str(e)}\n{traceback.format_exc()}"
+        print(err_msg)
+        return PlainTextResponse(err_msg, status_code=500)
 
 # --- Models ---
 class WeatherData(BaseModel):
