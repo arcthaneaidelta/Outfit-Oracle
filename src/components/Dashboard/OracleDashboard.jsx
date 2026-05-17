@@ -88,6 +88,13 @@ export default function Dashboard({ wardrobe, outfits, history, planner, onNavig
             </div>
           </div>
         )}
+
+        {/* Real HTML image layer that is 100% guaranteed to be rendered perfectly by all browsers! */}
+        <img 
+          src="/dashboard-header-bg.png" 
+          alt="Boho Closet Illustration" 
+          className="dashboard-header-illustration"
+        />
       </div>
 
       {/* Stylized Stats Row */}

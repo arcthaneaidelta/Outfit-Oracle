@@ -1020,17 +1020,15 @@ body:has(.auth-page) {
   border: none;
   box-shadow: none;
 }
-.dashboard-header::before {
-  content: "";
+.dashboard-header-illustration {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0; /* Anchors the illustration exactly to the bottom ground edge */
+  width: 100%;
   height: 150px; /* Restricts the drawing to the lower region */
-  background-image: url('/dashboard-header-bg.png');
-  background-size: cover;
-  background-position: center bottom; /* Aligns baseline illustration elements to the ground */
-  background-repeat: no-repeat;
+  object-fit: cover;
+  object-position: center bottom; /* Aligns baseline illustration elements to the ground */
   opacity: 0.92; /* Rich, solid drawing lines at the bottom ground level */
   z-index: 1; /* Elevates illustration on top of solid background color canvas */
   pointer-events: none;
@@ -1044,7 +1042,7 @@ body:has(.auth-page) {
 .dark-mode .dashboard-header {
   background: var(--cream); /* Dark mode seamless backdrop canvas */
 }
-.dark-mode .dashboard-header::before {
+.dark-mode .dashboard-header-illustration {
   opacity: 0.38; /* Perfect high-contrast cream glowing lines in dark mode */
   filter: invert(0.92) brightness(0.92) contrast(1.05); /* Inverts colors so background becomes dark and lines glow elegantly */
 }
@@ -2006,8 +2004,8 @@ body:has(.auth-page) {
     padding: 24px 0 110px 0; /* Creates 110px headroom at the bottom for mobile illustration */
     min-height: auto;
   }
-  .dashboard-header::before {
-    background-position: center bottom;
+  .dashboard-header-illustration {
+    object-position: center bottom;
     height: 120px;
   }
   .weather-card-premium {
