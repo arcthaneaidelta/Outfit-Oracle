@@ -1016,7 +1016,7 @@ body:has(.auth-page) {
   position: relative;
   overflow: hidden;
   min-height: 220px;
-  background: transparent;
+  background: var(--cream); /* Bulletproof backdrop canvas: matches page color 100% borderlessly but enables blending engine */
   border: none;
   box-shadow: none;
 }
@@ -1043,7 +1043,7 @@ body:has(.auth-page) {
   transition: opacity 0.3s ease;
 }
 .dark-mode .dashboard-header {
-  background: transparent;
+  background: var(--cream); /* Dark mode seamless backdrop canvas */
 }
 .dark-mode .dashboard-header::before {
   opacity: 0.38; /* Perfect high-contrast cream glowing lines in dark mode */
