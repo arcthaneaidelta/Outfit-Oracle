@@ -69,8 +69,28 @@ export default function Dashboard({ wardrobe, outfits, history, planner, onNavig
       </div>
 
       {/* Hero Greeting */}
-      <div className="dashboard-header">
-        <div className="dashboard-greeting">
+      <div 
+        className="dashboard-header"
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          alignItems: 'flex-start',
+          justifyContent: 'space-between',
+          gap: '20px',
+          marginTop: 0,
+          marginBottom: '24px',
+          width: '100%',
+          padding: '24px 0 140px 0', /* FORCE 140px headroom at the bottom for illustration */
+          position: 'relative',
+          overflow: 'hidden',
+          minHeight: '220px',
+          background: 'transparent',
+          border: 'none',
+          boxShadow: 'none'
+        }}
+      >
+        <div className="dashboard-greeting" style={{ position: 'relative', zIndex: 3 }}>
           <h2 className="display-title">
             {greeting()}, {userProfile?.name?.split(' ')[0] || 'there'} 👋
           </h2>
@@ -78,7 +98,7 @@ export default function Dashboard({ wardrobe, outfits, history, planner, onNavig
         </div>
 
         {weather && (
-          <div className="weather-card-premium">
+          <div className="weather-card-premium" style={{ position: 'relative', zIndex: 3 }}>
             <div className="weather-main">
               <span className="weather-icon-large">{weather.emoji}</span>
               <div className="weather-details">
