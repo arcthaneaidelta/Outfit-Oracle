@@ -1012,7 +1012,7 @@ body:has(.auth-page) {
   margin-top: 0;
   margin-bottom: 24px;
   width: 100%;
-  padding: 24px 0 140px 0; /* Add bottom padding to float the illustration beautifully at the bottom */
+  padding: 0 0 140px 0; /* Pulled text to the absolute top edge to clear the illustration */
   position: relative;
   overflow: hidden;
   min-height: 220px;
@@ -1058,7 +1058,7 @@ body:has(.auth-page) {
 .weather-card-premium {
   position: relative;
   z-index: 3; /* Layer 3: Floats cleanly on top of both background layers */
-  margin-top: 6px; /* Elegant top alignment offset */
+  margin-top: 0; /* Removed top margin to maximize lift */
 }
 .dashboard-greeting {
   display: flex;
@@ -2009,7 +2009,7 @@ body:has(.auth-page) {
     flex-direction: column;
     align-items: flex-start;
     gap: 20px;
-    padding: 24px 0 110px 0; /* Creates 110px headroom at the bottom for mobile illustration */
+    padding: 0 0 110px 0; /* Creates 110px headroom at the bottom for mobile illustration */
     min-height: auto;
   }
   .dashboard-header-illustration,
