@@ -73,24 +73,31 @@ export default function Dashboard({ wardrobe, outfits, history, planner, onNavig
         className="dashboard-header"
         style={{
           display: 'flex',
-          flexDirection: 'row',
-          flexWrap: 'wrap',
+          flexDirection: 'column',
           alignItems: 'flex-start',
-          justifyContent: 'space-between',
           gap: '20px',
           marginTop: 0,
           marginBottom: '24px',
           width: '100%',
-          padding: '24px 0 140px 0', /* FORCE 140px headroom at the bottom for illustration */
-          position: 'relative',
-          overflow: 'hidden',
-          minHeight: '220px',
-          background: 'transparent',
-          border: 'none',
-          boxShadow: 'none'
+          padding: '24px',
+          background: 'transparent'
         }}
       >
-        <div className="dashboard-greeting" style={{ position: 'relative', zIndex: 3 }}>
+        {/* DEFINITIVE CACHE TEST: If this does not show up, the browser is running stale code! */}
+        <img 
+          src="/dashboard-header-bg.png" 
+          alt="Boho Closet Illustration" 
+          style={{
+            width: '100%',
+            height: '200px',
+            objectFit: 'contain',
+            border: '10px solid #00FF00', // MASSIVE NEON GREEN BORDER
+            backgroundColor: 'purple', // MASSIVE PURPLE BACKGROUND
+            display: 'block'
+          }}
+        />
+
+        <div className="dashboard-greeting">
           <h2 className="display-title">
             {greeting()}, {userProfile?.name?.split(' ')[0] || 'there'} 👋
           </h2>
@@ -98,7 +105,7 @@ export default function Dashboard({ wardrobe, outfits, history, planner, onNavig
         </div>
 
         {weather && (
-          <div className="weather-card-premium" style={{ position: 'relative', zIndex: 3 }}>
+          <div className="weather-card-premium">
             <div className="weather-main">
               <span className="weather-icon-large">{weather.emoji}</span>
               <div className="weather-details">
@@ -108,43 +115,6 @@ export default function Dashboard({ wardrobe, outfits, history, planner, onNavig
             </div>
           </div>
         )}
-
-        {/* Real HTML image layer that is 100% guaranteed to be rendered perfectly by all browsers! */}
-        <img 
-          src="/dashboard-header-bg.png" 
-          alt="Boho Closet Illustration" 
-          style={{
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            bottom: 0,
-            width: '100%',
-            height: '140px', // Perfect unified headroom for both mobile and desktop screens
-            objectFit: 'cover',
-            objectPosition: 'center bottom',
-            opacity: theme === 'dark' ? 0.38 : 0.92,
-            filter: theme === 'dark' ? 'invert(0.92) brightness(0.92) contrast(1.05)' : 'none',
-            zIndex: 1, // Layer 1: Base image
-            pointerEvents: 'none',
-            display: 'block'
-          }}
-        />
-        {/* Bulletproof gradient overlay: transparent at bottom, page-cream/dark-charcoal at top to create the perfect fade */}
-        <div 
-          style={{
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            bottom: 0,
-            width: '100%',
-            height: '140px',
-            background: theme === 'dark' 
-              ? 'linear-gradient(to top, transparent 0%, transparent 15%, #121212 90%, #121212 100%)' 
-              : 'linear-gradient(to top, transparent 0%, transparent 15%, #FAF9F6 90%, #FAF9F6 100%)',
-            zIndex: 2, // Layer 2: Seamless blending gradient overlay
-            pointerEvents: 'none'
-          }}
-        />
       </div>
 
       {/* Stylized Stats Row */}
