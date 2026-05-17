@@ -1028,17 +1028,24 @@ body:has(.auth-page) {
   background-size: cover;
   background-position: right center;
   background-repeat: no-repeat;
-  opacity: 0.55; /* Perfect middle-ground opacity: clean and visible but not overpowering */
+  opacity: 0.55; /* Kept exactly at 0.55 as requested */
   z-index: 0;
   pointer-events: none;
+  mix-blend-mode: multiply; /* Blends the light image background seamlessly with the page background */
+  
+  /* Radial gradient mask: centers solid focus on right illustrations, fades beautifully to transparent on all outer border edges */
+  -webkit-mask-image: radial-gradient(circle at 75% 50%, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 0) 100%);
+  mask-image: radial-gradient(circle at 75% 50%, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 0) 100%);
+  
   transition: opacity 0.3s ease;
 }
 .dark-mode .dashboard-header {
   background: transparent;
 }
 .dark-mode .dashboard-header::before {
-  opacity: 0.25; /* Sleek middle visibility in dark mode */
+  opacity: 0.25; /* Kept exactly at 0.25 as requested */
   filter: invert(0.9) brightness(0.95); /* Invert the black lines so they become soft glowing cream lines on the dark background */
+  mix-blend-mode: screen; /* Blends inverted light linework seamlessly on dark layout background */
 }
 .dashboard-greeting,
 .weather-card-premium {
