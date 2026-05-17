@@ -1014,7 +1014,7 @@ body:has(.auth-page) {
   width: 100%;
   padding: 12px 0 140px 0; /* Subtle top breathing room, leaves pushed safely below */
   position: relative;
-  overflow: hidden;
+  /* Removed overflow: hidden so we can pull the text UP into the top bar space! */
   min-height: 220px;
   background: var(--cream); /* Exact page-matching background: seamless and borderless */
   border: none;
@@ -1057,8 +1057,7 @@ body:has(.auth-page) {
 .dashboard-greeting,
 .weather-card-premium {
   position: relative;
-  z-index: 3; /* Layer 3: Floats cleanly on top of both background layers */
-  margin-top: 0;
+  z-index: 3;
 }
 .dashboard-greeting {
   display: flex;

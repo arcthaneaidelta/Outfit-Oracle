@@ -47,8 +47,27 @@ export default function Dashboard({ wardrobe, outfits, history, planner, onNavig
   return (
     <div className="dashboard-container">
       {/* Top Utility Bar */}
-      <div className="dashboard-top-bar">
-        <div className="utility-actions">
+      <div className="dashboard-top-bar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', position: 'relative', zIndex: 10, marginBottom: '20px' }}>
+        <div className="dashboard-greeting">
+          <h2 className="display-title" style={{ margin: 0 }}>
+            {greeting()}, {userProfile?.name?.split(' ')[0] || 'there'} 👋
+          </h2>
+          <p className="sub-greeting" style={{ marginTop: '4px' }}>Here's your style overview for today.</p>
+        </div>
+
+        <div className="utility-actions" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          {weather && (
+            <div className="weather-card-premium" style={{ margin: 0, transform: 'none' }}>
+              <div className="weather-main">
+                <span className="weather-icon-large">{weather.emoji}</span>
+                <div className="weather-details">
+                  <div className="temp-display">{weather.temp || '--'}°C</div>
+                  <div className="condition-text">{weather.condition} · {userProfile?.city || 'Location'}</div>
+                </div>
+              </div>
+            </div>
+          )}
+          
           <div className="theme-animation-wrapper" onClick={toggleTheme} title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}>
             <div className="icon-clipper">
               <div className="rotating-icons" style={{ '--rotation': theme === 'dark' ? '180' : '0' }}>
@@ -68,27 +87,16 @@ export default function Dashboard({ wardrobe, outfits, history, planner, onNavig
         </div>
       </div>
 
-      {/* Hero Greeting */}
-      <div className="dashboard-header">
-        <div className="dashboard-greeting" style={{ position: 'relative', zIndex: 3 }}>
-          <h2 className="display-title">
-            {greeting()}, {userProfile?.name?.split(' ')[0] || 'there'} 👋
-          </h2>
-          <p className="sub-greeting">Here's your style overview for today.</p>
-        </div>
-
-        {weather && (
-          <div className="weather-card-premium" style={{ position: 'relative', zIndex: 3 }}>
-            <div className="weather-main">
-              <span className="weather-icon-large">{weather.emoji}</span>
-              <div className="weather-details">
-                <div className="temp-display">{weather.temp || '--'}°C</div>
-                <div className="condition-text">{weather.condition} · {userProfile?.city || 'Location'}</div>
-              </div>
-            </div>
-          </div>
-        )}
-
+      {/* Hero Illustration Background */}
+      <div 
+        className="dashboard-header" 
+        style={{ 
+          padding: 0, 
+          minHeight: '160px', 
+          marginBottom: '12px', /* Pushes the picture right down near the boxes */
+          marginTop: '-20px' /* Pulls illustration up slightly to cover empty gap */
+        }}
+      >
         {/* The Illustration with mix-blend-mode to magically dissolve the square background! */}
         <img 
           src="/dashboard-header-bg.png" 
@@ -99,9 +107,9 @@ export default function Dashboard({ wardrobe, outfits, history, planner, onNavig
             right: 0,
             bottom: 0,
             width: '100%',
-            height: '150px', // Restricts the illustration to the bottom ground
+            height: '100%', // Fills the full beautiful container height again!
             objectFit: 'cover',
-            objectPosition: 'center 60%', // Centers the drawing in the lower frame
+            objectPosition: 'center 60%', // Pushed the drawing down slightly so it's lower
             opacity: theme === 'dark' ? 0.25 : 0.65, // Perfect middle-ground transparency!
             filter: theme === 'dark' ? 'invert(1) brightness(0.85) contrast(1.1)' : 'none',
             mixBlendMode: theme === 'dark' ? 'screen' : 'multiply', // Magically dissolves the solid cream background of the image
@@ -111,7 +119,7 @@ export default function Dashboard({ wardrobe, outfits, history, planner, onNavig
           }}
         />
 
-        {/* Soft gradient overlay to smoothly fade the top of the drawing so the text is perfectly readable */}
+        {/* Soft gradient overlay to smoothly fade the top of the drawing */}
         <div 
           style={{
             position: 'absolute',
@@ -119,7 +127,7 @@ export default function Dashboard({ wardrobe, outfits, history, planner, onNavig
             right: 0,
             bottom: 0,
             width: '100%',
-            height: '150px',
+            height: '100%',
             background: 'linear-gradient(to top, transparent 0%, var(--cream) 100%)',
             zIndex: 2,
             pointerEvents: 'none'
