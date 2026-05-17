@@ -93,10 +93,38 @@ export default function Dashboard({ wardrobe, outfits, history, planner, onNavig
         <img 
           src="/dashboard-header-bg.png" 
           alt="Boho Closet Illustration" 
-          className="dashboard-header-illustration"
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: '100%',
+            height: '140px', // Perfect unified headroom for both mobile and desktop screens
+            objectFit: 'cover',
+            objectPosition: 'center bottom',
+            opacity: theme === 'dark' ? 0.38 : 0.92,
+            filter: theme === 'dark' ? 'invert(0.92) brightness(0.92) contrast(1.05)' : 'none',
+            zIndex: 1, // Layer 1: Base image
+            pointerEvents: 'none',
+            display: 'block'
+          }}
         />
-        {/* Bulletproof gradient overlay: transparent at bottom, page-cream at top to create the perfect fade */}
-        <div className="dashboard-header-overlay" />
+        {/* Bulletproof gradient overlay: transparent at bottom, page-cream/dark-charcoal at top to create the perfect fade */}
+        <div 
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: '100%',
+            height: '140px',
+            background: theme === 'dark' 
+              ? 'linear-gradient(to top, transparent 0%, transparent 15%, #121212 90%, #121212 100%)' 
+              : 'linear-gradient(to top, transparent 0%, transparent 15%, #FAF9F6 90%, #FAF9F6 100%)',
+            zIndex: 2, // Layer 2: Seamless blending gradient overlay
+            pointerEvents: 'none'
+          }}
+        />
       </div>
 
       {/* Stylized Stats Row */}
