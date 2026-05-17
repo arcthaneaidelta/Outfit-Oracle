@@ -1012,7 +1012,7 @@ body:has(.auth-page) {
   margin-top: 0;
   margin-bottom: 24px;
   width: 100%;
-  padding: 0 0 140px 0; /* Pulled text to the absolute top edge to clear the illustration */
+  padding: 12px 0 140px 0; /* Subtle top breathing room, leaves pushed safely below */
   position: relative;
   overflow: hidden;
   min-height: 220px;
@@ -1058,8 +1058,7 @@ body:has(.auth-page) {
 .weather-card-premium {
   position: relative;
   z-index: 3; /* Layer 3: Floats cleanly on top of both background layers */
-  margin-top: 0; /* Removed top margin to maximize lift */
-  transform: translateY(-16px); /* Physically pulls the elements UP by 16px to clear the leaves! */
+  margin-top: 0;
 }
 .dashboard-greeting {
   display: flex;

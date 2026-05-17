@@ -99,9 +99,9 @@ export default function Dashboard({ wardrobe, outfits, history, planner, onNavig
             right: 0,
             bottom: 0,
             width: '100%',
-            height: '100%', // Fills the container
+            height: '150px', // Restricts the illustration to the bottom ground
             objectFit: 'cover',
-            objectPosition: 'center 40%', // Centers the actual drawing in the frame, slightly lifted
+            objectPosition: 'center 60%', // Centers the drawing in the lower frame
             opacity: theme === 'dark' ? 0.25 : 0.65, // Perfect middle-ground transparency!
             filter: theme === 'dark' ? 'invert(1) brightness(0.85) contrast(1.1)' : 'none',
             mixBlendMode: theme === 'dark' ? 'screen' : 'multiply', // Magically dissolves the solid cream background of the image
@@ -119,7 +119,7 @@ export default function Dashboard({ wardrobe, outfits, history, planner, onNavig
             right: 0,
             bottom: 0,
             width: '100%',
-            height: '100%',
+            height: '150px',
             background: 'linear-gradient(to top, transparent 0%, var(--cream) 100%)',
             zIndex: 2,
             pointerEvents: 'none'
