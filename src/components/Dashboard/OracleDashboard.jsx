@@ -95,6 +95,8 @@ export default function Dashboard({ wardrobe, outfits, history, planner, onNavig
           alt="Boho Closet Illustration" 
           className="dashboard-header-illustration"
         />
+        {/* Bulletproof gradient overlay: transparent at bottom, page-cream at top to create the perfect fade */}
+        <div className="dashboard-header-overlay" />
       </div>
 
       {/* Stylized Stats Row */}

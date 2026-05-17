@@ -1030,14 +1030,22 @@ body:has(.auth-page) {
   object-fit: cover;
   object-position: center bottom; /* Aligns baseline illustration elements to the ground */
   opacity: 0.92; /* Rich, solid drawing lines at the bottom ground level */
-  z-index: 1; /* Elevates illustration on top of solid background color canvas */
+  z-index: 1; /* Layer 1: Base image */
   pointer-events: none;
-  
-  /* Vertical mask: only softly dissolves the very bottom 10% and top 15% so the entire vector artwork is fully solid and visible! */
-  -webkit-mask-image: linear-gradient(to top, transparent 0%, rgba(0, 0, 0, 1) 10%, rgba(0, 0, 0, 1) 85%, transparent 100%);
-  mask-image: linear-gradient(to top, transparent 0%, rgba(0, 0, 0, 1) 10%, rgba(0, 0, 0, 1) 85%, transparent 100%);
-  
   transition: opacity 0.3s ease;
+}
+.dashboard-header-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 150px;
+  /* Bulletproof cross-browser fade: transparent at the bottom, page-cream at the top */
+  background: linear-gradient(to top, transparent 0%, transparent 12%, var(--cream) 88%, var(--cream) 100%);
+  z-index: 2; /* Layer 2: Gradient overlay that merges illustration into layout background */
+  pointer-events: none;
+  transition: background 0.3s ease;
 }
 .dark-mode .dashboard-header {
   background: var(--cream); /* Dark mode seamless backdrop canvas */
@@ -1049,7 +1057,7 @@ body:has(.auth-page) {
 .dashboard-greeting,
 .weather-card-premium {
   position: relative;
-  z-index: 2; /* Sits crisp and clean on top of the background illustration */
+  z-index: 3; /* Layer 3: Floats cleanly on top of both background layers */
   margin-top: 6px; /* Elegant top alignment offset */
 }
 .dashboard-greeting {
@@ -2004,7 +2012,8 @@ body:has(.auth-page) {
     padding: 24px 0 110px 0; /* Creates 110px headroom at the bottom for mobile illustration */
     min-height: auto;
   }
-  .dashboard-header-illustration {
+  .dashboard-header-illustration,
+  .dashboard-header-overlay {
     object-position: center bottom;
     height: 120px;
   }
