@@ -11,17 +11,23 @@ const NAV_ITEMS = [
   { id: 'favorites', label: 'Favorites', icon: '❤️' },
 ];
 
-export default function Sidebar({ activeTab, onNavigate }) {
+export default function Sidebar({ activeTab, onNavigate, isOpen, setIsOpen }) {
   const { user, userProfile, logout } = useAuth();
   const { addToast } = useToast();
 
+  const handleNavigate = (tabId) => {
+    onNavigate(tabId);
+    if (setIsOpen) setIsOpen(false); // Auto-close drawer on click (mobile layout)
+  };
+
   const handleLogout = async () => {
+    if (setIsOpen) setIsOpen(false);
     await logout();
     addToast('Signed out successfully', 'info');
   };
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
       <div className="sidebar-logo">
         <h1>Outfit<span style={{ color: '#D4774A' }}>Oracle</span></h1>
         <p>Smart Style Assistant</p>
@@ -32,7 +38,7 @@ export default function Sidebar({ activeTab, onNavigate }) {
           <button
             key={item.id}
             className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
-            onClick={() => onNavigate(item.id)}
+            onClick={() => handleNavigate(item.id)}
           >
             <span className="nav-icon">{item.icon}</span>
             {item.label}
@@ -43,7 +49,7 @@ export default function Sidebar({ activeTab, onNavigate }) {
       <div className="sidebar-bottom">
         <button 
           className={`sidebar-user-area ${activeTab === 'profile' ? 'active' : ''}`}
-          onClick={() => onNavigate('profile')}
+          onClick={() => handleNavigate('profile')}
         >
           <div className="user-info">
             <div className="user-name">

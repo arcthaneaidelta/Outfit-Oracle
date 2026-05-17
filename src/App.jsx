@@ -40,6 +40,7 @@ import { useWardrobe, useOutfits, usePlanner, useWearHistory } from './hooks/use
 function AppShell({ theme, toggleTheme }) {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const { items, loading: wLoading, addItem, updateItem, deleteItem } = useWardrobe(user?.uid);
   const { outfits, loading: oLoading, saveOutfit, updateOutfit, deleteOutfit, toggleFavorite } = useOutfits(user?.uid);
@@ -58,7 +59,7 @@ function AppShell({ theme, toggleTheme }) {
   if (loading) {
     return (
       <div className={`app-layout ${theme === 'dark' ? 'dark-mode' : ''}`}>
-        <Sidebar activeTab={activeTab} onNavigate={setActiveTab} />
+        <Sidebar activeTab={activeTab} onNavigate={setActiveTab} isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
         <main className="main-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <LoadingScreen fullScreen={false} text="Syncing your wardrobe..." />
         </main>
@@ -91,7 +92,27 @@ function AppShell({ theme, toggleTheme }) {
 
   return (
     <div className={`app-layout ${theme === 'dark' ? 'dark-mode' : ''}`}>
-      <Sidebar activeTab={activeTab} onNavigate={setActiveTab} />
+      {/* Mobile Top Header Bar */}
+      <div className="mobile-header-bar">
+        <button className="menu-toggle-btn" onClick={() => setSidebarOpen(true)} aria-label="Open Navigation Menu">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>
+        </button>
+        <div className="mobile-logo-text">
+          Outfit<span>Oracle</span>
+        </div>
+        <div className="mobile-utility">
+          <button className="mobile-theme-btn" onClick={toggleTheme} title="Toggle Theme">
+            {theme === 'dark' ? '☀️' : '🌙'}
+          </button>
+        </div>
+      </div>
+
+      {/* Sidebar overlay backdrop */}
+      {sidebarOpen && (
+        <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />
+      )}
+
+      <Sidebar activeTab={activeTab} onNavigate={setActiveTab} isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
       <main className="main-content">
         {renderContent()}
       </main>
