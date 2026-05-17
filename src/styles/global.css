@@ -1016,7 +1016,7 @@ body:has(.auth-page) {
   position: relative;
   overflow: hidden;
   min-height: 220px;
-  background: var(--cream); /* Bulletproof backdrop canvas: matches page color 100% borderlessly but enables blending engine */
+  background: var(--cream); /* Exact page-matching background: seamless and borderless */
   border: none;
   box-shadow: none;
 }
@@ -1034,11 +1034,10 @@ body:has(.auth-page) {
   opacity: 0.92; /* Rich, solid drawing lines at the bottom ground level */
   z-index: 0;
   pointer-events: none;
-  mix-blend-mode: multiply; /* Seamless blending with light background */
   
-  /* Vertical Fade: 100% solid at the bottom edge, fading out completely transparent at the top to keep text background clean */
-  -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.45) 55%, rgba(0, 0, 0, 0) 100%);
-  mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.45) 55%, rgba(0, 0, 0, 0) 100%);
+  /* Vertical mask that fades out at both the top and bottom to eliminate any straight boundaries completely without needing mix-blend-modes */
+  -webkit-mask-image: linear-gradient(to top, transparent 0%, rgba(0, 0, 0, 1) 12%, rgba(0, 0, 0, 1) 50%, transparent 100%);
+  mask-image: linear-gradient(to top, transparent 0%, rgba(0, 0, 0, 1) 12%, rgba(0, 0, 0, 1) 50%, transparent 100%);
   
   transition: opacity 0.3s ease;
 }
@@ -1047,8 +1046,7 @@ body:has(.auth-page) {
 }
 .dark-mode .dashboard-header::before {
   opacity: 0.38; /* Perfect high-contrast cream glowing lines in dark mode */
-  filter: invert(0.9) brightness(0.95); /* glowing cream-gold linework */
-  mix-blend-mode: screen; /* Seamless overlay on dark background */
+  filter: invert(0.92) brightness(0.92) contrast(1.05); /* Inverts colors so background becomes dark and lines glow elegantly */
 }
 .dashboard-greeting,
 .weather-card-premium {
