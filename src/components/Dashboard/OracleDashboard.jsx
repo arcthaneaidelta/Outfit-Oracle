@@ -69,27 +69,7 @@ export default function Dashboard({ wardrobe, outfits, history, planner, onNavig
       </div>
 
       {/* Hero Greeting */}
-      <div 
-        className="dashboard-header"
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          alignItems: 'flex-start',
-          justifyContent: 'space-between',
-          gap: '20px',
-          marginTop: 0,
-          marginBottom: '24px',
-          width: '100%',
-          padding: '24px 0 140px 0', /* 140px headroom at the bottom for illustration */
-          position: 'relative',
-          overflow: 'hidden',
-          minHeight: '220px',
-          background: 'transparent',
-          border: 'none',
-          boxShadow: 'none'
-        }}
-      >
+      <div className="dashboard-header">
         <div className="dashboard-greeting" style={{ position: 'relative', zIndex: 3 }}>
           <h2 className="display-title">
             {greeting()}, {userProfile?.name?.split(' ')[0] || 'there'} 👋
@@ -119,10 +99,10 @@ export default function Dashboard({ wardrobe, outfits, history, planner, onNavig
             right: 0,
             bottom: 0,
             width: '100%',
-            height: '180px',
+            height: '100%', // Fills the container
             objectFit: 'cover',
-            objectPosition: 'center bottom',
-            opacity: theme === 'dark' ? 0.35 : 0.85, // Perfect middle-ground transparency!
+            objectPosition: 'center 40%', // Centers the actual drawing in the frame, slightly lifted
+            opacity: theme === 'dark' ? 0.25 : 0.65, // Perfect middle-ground transparency!
             filter: theme === 'dark' ? 'invert(1) brightness(0.85) contrast(1.1)' : 'none',
             mixBlendMode: theme === 'dark' ? 'screen' : 'multiply', // Magically dissolves the solid cream background of the image
             zIndex: 1, 
@@ -139,8 +119,8 @@ export default function Dashboard({ wardrobe, outfits, history, planner, onNavig
             right: 0,
             bottom: 0,
             width: '100%',
-            height: '180px',
-            background: 'linear-gradient(to top, transparent 0%, transparent 40%, var(--cream) 100%)',
+            height: '100%',
+            background: 'linear-gradient(to top, transparent 0%, var(--cream) 100%)',
             zIndex: 2,
             pointerEvents: 'none'
           }}
