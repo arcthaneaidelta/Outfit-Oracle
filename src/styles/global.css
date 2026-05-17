@@ -1007,15 +1007,15 @@ body:has(.auth-page) {
 }
 .dashboard-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* Align text and weather card cleanly to the very top */
   justify-content: space-between;
   margin-top: 0;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
   width: 100%;
-  padding: 24px 0 32px 0; /* Aligned with page padding, completely borderless with no card box */
+  padding: 24px 0 140px 0; /* Add bottom padding to float the illustration beautifully at the bottom */
   position: relative;
   overflow: hidden;
-  min-height: 180px;
+  min-height: 220px;
   background: transparent;
   border: none;
   box-shadow: none;
@@ -1023,19 +1023,22 @@ body:has(.auth-page) {
 .dashboard-header::before {
   content: "";
   position: absolute;
-  inset: 0;
+  left: 0;
+  right: 0;
+  bottom: 0; /* Anchors the illustration exactly to the bottom ground edge */
+  height: 150px; /* Restricts the drawing to the lower region */
   background-image: url('/dashboard-header-bg.png');
   background-size: cover;
-  background-position: right center;
+  background-position: center bottom; /* Aligns baseline illustration elements to the ground */
   background-repeat: no-repeat;
-  opacity: 0.55; /* Kept exactly at 0.55 as requested */
+  opacity: 0.92; /* Rich, solid drawing lines at the bottom ground level */
   z-index: 0;
   pointer-events: none;
-  mix-blend-mode: multiply; /* Blends the light image background seamlessly with the page background */
+  mix-blend-mode: multiply; /* Seamless blending with light background */
   
-  /* Radial gradient mask: centers solid focus on right illustrations, fades beautifully to transparent on all outer border edges */
-  -webkit-mask-image: radial-gradient(circle at 75% 50%, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 0) 100%);
-  mask-image: radial-gradient(circle at 75% 50%, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 0) 100%);
+  /* Vertical Fade: 100% solid at the bottom edge, fading out completely transparent at the top to keep text background clean */
+  -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.45) 55%, rgba(0, 0, 0, 0) 100%);
+  mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.45) 55%, rgba(0, 0, 0, 0) 100%);
   
   transition: opacity 0.3s ease;
 }
@@ -1043,14 +1046,15 @@ body:has(.auth-page) {
   background: transparent;
 }
 .dark-mode .dashboard-header::before {
-  opacity: 0.25; /* Kept exactly at 0.25 as requested */
-  filter: invert(0.9) brightness(0.95); /* Invert the black lines so they become soft glowing cream lines on the dark background */
-  mix-blend-mode: screen; /* Blends inverted light linework seamlessly on dark layout background */
+  opacity: 0.38; /* Perfect high-contrast cream glowing lines in dark mode */
+  filter: invert(0.9) brightness(0.95); /* glowing cream-gold linework */
+  mix-blend-mode: screen; /* Seamless overlay on dark background */
 }
 .dashboard-greeting,
 .weather-card-premium {
   position: relative;
   z-index: 2;
+  margin-top: 6px; /* Elegant top alignment offset */
 }
 .dashboard-greeting {
   display: flex;
@@ -2001,11 +2005,12 @@ body:has(.auth-page) {
     flex-direction: column;
     align-items: flex-start;
     gap: 20px;
-    padding: 20px 0; /* Aligned with margins, borderless */
+    padding: 24px 0 110px 0; /* Creates 110px headroom at the bottom for mobile illustration */
     min-height: auto;
   }
   .dashboard-header::before {
-    background-position: center;
+    background-position: center bottom;
+    height: 120px;
   }
   .weather-card-premium {
     width: 100%;
