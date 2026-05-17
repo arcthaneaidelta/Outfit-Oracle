@@ -1032,12 +1032,12 @@ body:has(.auth-page) {
   background-position: center bottom; /* Aligns baseline illustration elements to the ground */
   background-repeat: no-repeat;
   opacity: 0.92; /* Rich, solid drawing lines at the bottom ground level */
-  z-index: 0;
+  z-index: 1; /* Elevates illustration on top of solid background color canvas */
   pointer-events: none;
   
-  /* Vertical mask that fades out at both the top and bottom to eliminate any straight boundaries completely without needing mix-blend-modes */
-  -webkit-mask-image: linear-gradient(to top, transparent 0%, rgba(0, 0, 0, 1) 12%, rgba(0, 0, 0, 1) 50%, transparent 100%);
-  mask-image: linear-gradient(to top, transparent 0%, rgba(0, 0, 0, 1) 12%, rgba(0, 0, 0, 1) 50%, transparent 100%);
+  /* Vertical mask: only softly dissolves the very bottom 10% and top 15% so the entire vector artwork is fully solid and visible! */
+  -webkit-mask-image: linear-gradient(to top, transparent 0%, rgba(0, 0, 0, 1) 10%, rgba(0, 0, 0, 1) 85%, transparent 100%);
+  mask-image: linear-gradient(to top, transparent 0%, rgba(0, 0, 0, 1) 10%, rgba(0, 0, 0, 1) 85%, transparent 100%);
   
   transition: opacity 0.3s ease;
 }
@@ -1051,7 +1051,7 @@ body:has(.auth-page) {
 .dashboard-greeting,
 .weather-card-premium {
   position: relative;
-  z-index: 2;
+  z-index: 2; /* Sits crisp and clean on top of the background illustration */
   margin-top: 6px; /* Elegant top alignment offset */
 }
 .dashboard-greeting {
