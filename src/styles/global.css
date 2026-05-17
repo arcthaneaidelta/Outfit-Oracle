@@ -1012,15 +1012,13 @@ body:has(.auth-page) {
   margin-top: 0;
   margin-bottom: 32px;
   width: 100%;
-  padding: 44px 40px;
-  border-radius: var(--radius-lg);
-  background: #FAF8F5; /* Premium warm ivory-cream card background */
-  border: 1px solid var(--cream-darker);
+  padding: 24px 0 32px 0; /* Aligned with page padding, completely borderless with no card box */
   position: relative;
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
   min-height: 180px;
-  transition: background 0.3s ease, border-color 0.3s ease;
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 .dashboard-header::before {
   content: "";
@@ -1030,24 +1028,22 @@ body:has(.auth-page) {
   background-size: cover;
   background-position: right center;
   background-repeat: no-repeat;
-  opacity: 0.22; /* Transparent kinda! */
-  filter: blur(4px); /* Blurred in the background! */
+  opacity: 0.55; /* Perfect middle-ground opacity: clean and visible but not overpowering */
   z-index: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease, filter 0.3s ease;
+  transition: opacity 0.3s ease;
 }
 .dark-mode .dashboard-header {
-  background: #14110F; /* Dark mode card background */
-  border-color: #44403C;
+  background: transparent;
 }
 .dark-mode .dashboard-header::before {
-  opacity: 0.08; /* Extra subtle watermark in dark mode */
-  filter: blur(5px) brightness(0.6);
+  opacity: 0.25; /* Sleek middle visibility in dark mode */
+  filter: invert(0.9) brightness(0.95); /* Invert the black lines so they become soft glowing cream lines on the dark background */
 }
 .dashboard-greeting,
 .weather-card-premium {
   position: relative;
-  z-index: 2; /* Sits cleanly on top of the blurred illustration */
+  z-index: 2;
 }
 .dashboard-greeting {
   display: flex;
@@ -1998,7 +1994,7 @@ body:has(.auth-page) {
     flex-direction: column;
     align-items: flex-start;
     gap: 20px;
-    padding: 32px 24px;
+    padding: 20px 0; /* Aligned with margins, borderless */
     min-height: auto;
   }
   .dashboard-header::before {
