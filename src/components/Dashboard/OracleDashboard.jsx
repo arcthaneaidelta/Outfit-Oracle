@@ -73,31 +73,24 @@ export default function Dashboard({ wardrobe, outfits, history, planner, onNavig
         className="dashboard-header"
         style={{
           display: 'flex',
-          flexDirection: 'column',
+          flexDirection: 'row',
+          flexWrap: 'wrap',
           alignItems: 'flex-start',
+          justifyContent: 'space-between',
           gap: '20px',
           marginTop: 0,
           marginBottom: '24px',
           width: '100%',
-          padding: '24px',
-          background: 'transparent'
+          padding: '24px 0 140px 0', /* 140px headroom at the bottom for illustration */
+          position: 'relative',
+          overflow: 'hidden',
+          minHeight: '220px',
+          background: 'transparent',
+          border: 'none',
+          boxShadow: 'none'
         }}
       >
-        {/* DEFINITIVE CACHE TEST: If this does not show up, the browser is running stale code! */}
-        <img 
-          src="/dashboard-header-bg.png" 
-          alt="Boho Closet Illustration" 
-          style={{
-            width: '100%',
-            height: '200px',
-            objectFit: 'contain',
-            border: '10px solid #00FF00', // MASSIVE NEON GREEN BORDER
-            backgroundColor: 'purple', // MASSIVE PURPLE BACKGROUND
-            display: 'block'
-          }}
-        />
-
-        <div className="dashboard-greeting">
+        <div className="dashboard-greeting" style={{ position: 'relative', zIndex: 3 }}>
           <h2 className="display-title">
             {greeting()}, {userProfile?.name?.split(' ')[0] || 'there'} 👋
           </h2>
@@ -105,7 +98,7 @@ export default function Dashboard({ wardrobe, outfits, history, planner, onNavig
         </div>
 
         {weather && (
-          <div className="weather-card-premium">
+          <div className="weather-card-premium" style={{ position: 'relative', zIndex: 3 }}>
             <div className="weather-main">
               <span className="weather-icon-large">{weather.emoji}</span>
               <div className="weather-details">
@@ -115,6 +108,43 @@ export default function Dashboard({ wardrobe, outfits, history, planner, onNavig
             </div>
           </div>
         )}
+
+        {/* The Illustration with mix-blend-mode to magically dissolve the square background! */}
+        <img 
+          src="/dashboard-header-bg.png" 
+          alt="Boho Closet Illustration" 
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: '100%',
+            height: '180px',
+            objectFit: 'cover',
+            objectPosition: 'center bottom',
+            opacity: theme === 'dark' ? 0.35 : 0.85, // Perfect middle-ground transparency!
+            filter: theme === 'dark' ? 'invert(1) brightness(0.85) contrast(1.1)' : 'none',
+            mixBlendMode: theme === 'dark' ? 'screen' : 'multiply', // Magically dissolves the solid cream background of the image
+            zIndex: 1, 
+            pointerEvents: 'none',
+            display: 'block'
+          }}
+        />
+
+        {/* Soft gradient overlay to smoothly fade the top of the drawing so the text is perfectly readable */}
+        <div 
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: '100%',
+            height: '180px',
+            background: 'linear-gradient(to top, transparent 0%, transparent 40%, var(--cream) 100%)',
+            zIndex: 2,
+            pointerEvents: 'none'
+          }}
+        />
       </div>
 
       {/* Stylized Stats Row */}
