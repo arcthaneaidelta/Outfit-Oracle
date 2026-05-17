@@ -92,9 +92,9 @@ export default function Dashboard({ wardrobe, outfits, history, planner, onNavig
         className="dashboard-header" 
         style={{ 
           padding: 0, 
-          minHeight: '160px', 
-          marginBottom: '12px', /* Pushes the picture right down near the boxes */
-          marginTop: '-20px' /* Pulls illustration up slightly to cover empty gap */
+          minHeight: '240px', /* Restored the full beautiful height! */
+          marginBottom: '12px',
+          marginTop: '-20px'
         }}
       >
         {/* The Illustration with mix-blend-mode to magically dissolve the square background! */}
@@ -107,12 +107,12 @@ export default function Dashboard({ wardrobe, outfits, history, planner, onNavig
             right: 0,
             bottom: 0,
             width: '100%',
-            height: '100%', // Fills the full beautiful container height again!
+            height: '100%',
             objectFit: 'cover',
-            objectPosition: 'center 60%', // Pushed the drawing down slightly so it's lower
-            opacity: theme === 'dark' ? 0.25 : 0.65, // Perfect middle-ground transparency!
+            objectPosition: 'center 35%', // Perfectly centers the birds and clothes rack in the taller frame
+            opacity: theme === 'dark' ? 0.25 : 0.65,
             filter: theme === 'dark' ? 'invert(1) brightness(0.85) contrast(1.1)' : 'none',
-            mixBlendMode: theme === 'dark' ? 'screen' : 'multiply', // Magically dissolves the solid cream background of the image
+            mixBlendMode: theme === 'dark' ? 'screen' : 'multiply',
             zIndex: 1, 
             pointerEvents: 'none',
             display: 'block'
