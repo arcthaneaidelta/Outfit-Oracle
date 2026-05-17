@@ -1059,6 +1059,7 @@ body:has(.auth-page) {
   position: relative;
   z-index: 3; /* Layer 3: Floats cleanly on top of both background layers */
   margin-top: 0; /* Removed top margin to maximize lift */
+  transform: translateY(-16px); /* Physically pulls the elements UP by 16px to clear the leaves! */
 }
 .dashboard-greeting {
   display: flex;
@@ -1068,6 +1069,7 @@ body:has(.auth-page) {
   font-size: clamp(28px, 3.5vw, 42px);
   letter-spacing: -1px;
   line-height: 1.1;
+  margin: 0; /* STRIP hidden browser default margins pushing it down! */
 }
 .sub-greeting {
   color: var(--charcoal-muted);
